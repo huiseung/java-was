@@ -7,7 +7,7 @@ import codesquad.model.User;
 public class RegisterApiHandler extends Handler{
 
     @Override
-    protected void doPost(HttpRequest request, HttpResponse response) {
+    protected void doGet(HttpRequest request, HttpResponse response) {
         String queryString = request.getQueryString();
         String[] query = queryString.split("&");
         String userId = query[0].split("=")[1];
@@ -15,5 +15,6 @@ public class RegisterApiHandler extends Handler{
         String password = query[2].split("=")[1];
         User user = new User(userId, password, nickname);
         log.debug("user: "+user);
+        response.setBodyMessage(user.toString());
     }
 }
