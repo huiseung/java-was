@@ -7,8 +7,9 @@ public class HandlerMapping {
     private static final Map<String, Handler> handlers = new HashMap<>();
 
     static {
-        handlers.put("/index", new IndexHandler());
-        handlers.put("/registration", new RegisterHandler());
+        handlers.put("/index", new IndexViewHandler());
+        handlers.put("/registration", new RegisterViewHandler());
+        handlers.put("/create", new RegisterApiHandler());
     }
 
     public static Handler getHandler(String url){

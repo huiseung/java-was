@@ -31,6 +31,8 @@ public class HttpRequest {
         return startLine.getMethod();
     }
 
+    public String getQueryString() {return startLine.getQueryString();}
+
     private String readStartLine(BufferedReader br) throws IOException {
         String line = br.readLine();
         if(line == null){
