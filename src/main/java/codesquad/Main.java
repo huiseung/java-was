@@ -2,7 +2,6 @@ package codesquad;
 
 import codesquad.webserver.RequestHandler;
 import java.io.IOException;
-import java.io.OutputStream;
 import java.net.ServerSocket;
 import java.net.Socket;
 import org.slf4j.Logger;
