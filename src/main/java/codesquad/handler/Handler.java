@@ -8,7 +8,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public abstract class Handler {
-    private final Logger log = LoggerFactory.getLogger(Handler.class);
+    protected final Logger log = LoggerFactory.getLogger(Handler.class);
 
     public void handle(HttpRequest request, HttpResponse response){
         HttpMethod method = request.getMethod();
@@ -17,6 +17,10 @@ public abstract class Handler {
         }else if(method.isGet()){
             doGet(request, response);
         }
+    }
+
+    public void printClassName(){
+        log.debug("name: "+getClass().getName());
     }
 
     protected void doGet(HttpRequest request, HttpResponse response){}

@@ -32,6 +32,7 @@ public class RequestHandler implements Runnable{
             if(handler == null){
                 response.setBodyFile(request.getPath());
             } else{
+                handler.printClassName();
                 handler.handle(request, response);
             }
             log.info("response: "+response);
