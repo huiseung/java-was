@@ -21,6 +21,9 @@ public class HttpResponse {
             byte[] body = FileReader.readFile(path);
             setSuccessStatusHeader();
             headers.put("Content-Length", body.length+"");
+            if(path.endsWith(".svg")){
+                headers.put("Content-Type", "image/svg+xml");
+            }
             processHeader();
             setResponseBody(body);
         } catch (IOException e) {
@@ -41,7 +44,7 @@ public class HttpResponse {
         try{
             outputStream.writeBytes("HTTP/1.1 200 OK\r\n");
         } catch (IOException e) {
-            log.error(e.getMessage());
+            log.error(e.getMessage(), e);
         }
     }
 
