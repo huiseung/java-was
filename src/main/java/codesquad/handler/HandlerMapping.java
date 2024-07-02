@@ -8,6 +8,7 @@ public class HandlerMapping {
 
     static {
         handlers.put("/index", new IndexHandler());
+        handlers.put("/registration", new RegisterHandler());
     }
 
     public static Handler getHandler(String url){
