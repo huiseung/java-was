@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class ContentTypeMapping {
+    private ContentTypeMapping(){};
     private static final Map<String, String> contentTypes = new HashMap<>();
     static{
         contentTypes.put(".html", "text/html;charset=utf-8");

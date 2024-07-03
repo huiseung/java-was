@@ -5,6 +5,7 @@ import java.io.FileInputStream;
 import java.io.IOException;
 
 public class FileReader {
+    private FileReader(){};
     public static byte[] readFile(String path) throws IOException {
         String STATIC_DIRECTORY_PATH = "./src/main/resources/static";
         File file = new File(STATIC_DIRECTORY_PATH +path);
