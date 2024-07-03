@@ -44,17 +44,18 @@ public class HttpRequest {
     private HttpHeaders processHeader(BufferedReader br) throws IOException {
         HttpHeaders headers = new HttpHeaders();
         String line;
+        // \r\n 까지 읽는다
         while(!(line = br.readLine()).isEmpty()){
-            headers.add(line);
+            String[] row = line.split(":");
+            headers.add(row[0], row[1].trim());
         }
         return headers;
     }
 
     @Override
     public String toString() {
-        return "HttpRequest{" +
-                "startLine=" + startLine +
-                ", headers=" + headers +
+        return "HttpRequest{" + startLine +
+                "," + headers +
                 '}';
     }
 }
