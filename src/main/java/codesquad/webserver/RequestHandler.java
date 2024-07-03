@@ -30,7 +30,6 @@ public class RequestHandler implements Runnable {
             log.debug("request: {}", request);
             HttpResponse response = new HttpResponse(outputStream);
             Handler handler = HandlerMapping.getHandler(request.getPath());
-
             if (handler == null) {
                 response.setBodyFile(request.getPath());
             } else {

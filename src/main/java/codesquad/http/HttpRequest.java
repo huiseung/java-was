@@ -17,7 +17,7 @@ public class HttpRequest {
         try{
             BufferedReader br = new BufferedReader(new InputStreamReader(inputStream, StandardCharsets.UTF_8));
             startLine = new HttpRequestStartLine(readStartLine(br));
-            headers = processHeader(br);
+            headers = readHeader(br);
         } catch (IOException e) {
             log.error(e.getMessage(), e);
         }
@@ -41,7 +41,7 @@ public class HttpRequest {
         return line;
     }
 
-    private HttpHeaders processHeader(BufferedReader br) throws IOException {
+    private HttpHeaders readHeader(BufferedReader br) throws IOException {
         HttpHeaders headers = new HttpHeaders();
         String line;
         // \r\n 까지 읽는다

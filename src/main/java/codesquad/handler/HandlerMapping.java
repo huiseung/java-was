@@ -4,7 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class HandlerMapping {
-    private HandlerMapping(){}
+    private  HandlerMapping(){}
     private static final Map<String, Handler> handlers = new HashMap<>();
 
     static {

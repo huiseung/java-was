@@ -19,13 +19,13 @@ public class HttpResponse {
     public void setBodyFile(String path){
         try{
             byte[] body = FileReader.readFile(path);
-            setSuccessStatusHeader();
-            headers.put("Content-Length", body.length+"");
             String fileExtension = path.substring(path.lastIndexOf("."));
-            System.out.println(fileExtension);
+
+            writeSuccessStatusLine();
+            headers.put("Content-Length", body.length+"");
             headers.put("Content-Type", ContentTypeMapping.getContentType(fileExtension));
-            processHeader();
-            setResponseBody(body);
+            writeHeader();
+            writeResponseBody(body);
         } catch (IOException e) {
             log.error(e.getMessage(), e);
         }
@@ -33,14 +33,22 @@ public class HttpResponse {
 
     public void setBodyMessage(String body) {
         byte[] contents = body.getBytes();
-        setSuccessStatusHeader();
+        writeSuccessStatusLine();
         headers.put("Content-Type", ContentTypeMapping.getContentType(".html"));
         headers.put("Content-Length", contents.length +"");
-        processHeader();
-        setResponseBody(contents);
+        writeHeader();
+        writeResponseBody(contents);
     }
 
-    private void setSuccessStatusHeader(){
+    public void sendAndKeepConnection(){
+        try{
+            outputStream.flush();
+        } catch (IOException e) {
+            log.error(e.getMessage(), e);
+        }
+    }
+
+    private void writeSuccessStatusLine(){
         try{
             outputStream.writeBytes("HTTP/1.1 200 OK\r\n");
         } catch (IOException e) {
@@ -48,7 +56,7 @@ public class HttpResponse {
         }
     }
 
-    private void setNewLine(){
+    private void writeEmptyLine(){
         try{
             outputStream.writeBytes("\r\n");
         }catch (IOException e){
@@ -56,22 +64,20 @@ public class HttpResponse {
         }
     }
 
-    private void setResponseBody(byte[] body){
+    private void writeResponseBody(byte[] body){
         try{
             outputStream.write(body, 0, body.length);
-            outputStream.writeBytes("\r\n");
-            outputStream.flush();
         } catch (IOException e) {
             log.error(e.getMessage());
         }
     }
 
-    private void processHeader(){
+    private void writeHeader(){
         try{
             for(String key : headers.keySet()){
                 outputStream.writeBytes(key+": "+headers.get(key)+"\r\n");
             }
-            setNewLine();
+            writeEmptyLine();
         } catch (IOException e) {
             log.error(e.getMessage());
         }
