@@ -19,7 +19,7 @@ public class HttpRequest {
             startLine = new HttpRequestStartLine(readStartLine(br));
             headers = processHeader(br);
         } catch (IOException e) {
-            log.error(e.getMessage());
+            log.error(e.getMessage(), e);
         }
     }
 

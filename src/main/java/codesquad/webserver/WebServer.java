@@ -21,18 +21,17 @@ public class WebServer {
             executorService = Executors.newFixedThreadPool(n_THREADS);
             serverSocket = new ServerSocket(port);
         } catch (IOException e) {
-            throw new RuntimeException(e);
+            log.error(e.getMessage(), e);
         }
     }
 
     public void run() {
         while (true) {
             try{
-                Socket clientSocket = serverSocket.accept();
                 log.info("Listening for connection on port 8080 ....");
-                executorService.submit(new RequestHandler(clientSocket));
+                executorService.submit(new RequestHandler(serverSocket.accept()));
             } catch (IOException e) {
-                throw new RuntimeException(e);
+                log.error(e.getMessage(), e);
             }
         }
     }

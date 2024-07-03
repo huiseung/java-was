@@ -27,7 +27,7 @@ public class HttpResponse {
             processHeader();
             setResponseBody(body);
         } catch (IOException e) {
-            throw new RuntimeException(e);
+            log.error(e.getMessage(), e);
         }
     }
 
