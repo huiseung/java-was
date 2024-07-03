@@ -21,9 +21,9 @@ public class HttpResponse {
             byte[] body = FileReader.readFile(path);
             setSuccessStatusHeader();
             headers.put("Content-Length", body.length+"");
-            if(path.endsWith(".svg")){
-                headers.put("Content-Type", "image/svg+xml");
-            }
+            String fileExtension = path.substring(path.lastIndexOf("."));
+            System.out.println(fileExtension);
+            headers.put("Content-Type", ContentTypeMapping.getContentType(fileExtension));
             processHeader();
             setResponseBody(body);
         } catch (IOException e) {
@@ -34,7 +34,7 @@ public class HttpResponse {
     public void setBodyMessage(String body) {
         byte[] contents = body.getBytes();
         setSuccessStatusHeader();
-        headers.put("Content-Type", "text/html;charset=utf-8");
+        headers.put("Content-Type", ContentTypeMapping.getContentType(".html"));
         headers.put("Content-Length", contents.length +"");
         processHeader();
         setResponseBody(contents);
