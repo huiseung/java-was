@@ -6,8 +6,8 @@ import codesquad.webserver.http.HttpMethod;
 import codesquad.webserver.util.ClassFinder;
 import java.lang.reflect.Method;
 
-public class OperationInitializer {
-    public static void init(OperationHandler operationHandler){
+public class DyanmicResourceHandlerInitializer {
+    public static void init(DynamicResourceHandler dynamicResourceHandler){
         for(Class<?> clazz : ClassFinder.findAllClass(Main.class)){
             try{
                 Object handler = clazz.getDeclaredConstructor().newInstance();
@@ -16,7 +16,7 @@ public class OperationInitializer {
                         RequestMapping requestMapping = method.getAnnotation(RequestMapping.class);
                         HttpMethod httpMethod = requestMapping.method();
                         String path = requestMapping.path();
-                        operationHandler.addRoute(httpMethod, path, new HandlerMethod(handler, method));
+                        dynamicResourceHandler.addRoute(httpMethod, path, new HandlerMethod(handler, method));
                     }
                 }
             }catch (Exception e){
