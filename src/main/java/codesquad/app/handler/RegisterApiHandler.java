@@ -1,10 +1,11 @@
-package codesquad.handler;
+package codesquad.app.handler;
 
+import codesquad.handler.OperationHandler;
 import codesquad.http.HttpRequest;
 import codesquad.http.HttpResponse;
 import codesquad.model.User;
 
-public class RegisterApiHandler extends Handler{
+public class RegisterApiHandler extends OperationHandler {
 
     @Override
     protected void doGet(HttpRequest request, HttpResponse response) {
