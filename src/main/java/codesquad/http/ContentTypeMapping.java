@@ -2,6 +2,7 @@ package codesquad.http;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
 
 public class ContentTypeMapping {
     private ContentTypeMapping(){};
@@ -25,5 +26,9 @@ public class ContentTypeMapping {
     }
     public static String getContentType(String fileExtension){
         return contentTypes.get(fileExtension);
+    }
+
+    public static Set<String> getFileExtensions(){
+        return contentTypes.keySet();
     }
 }
