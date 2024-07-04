@@ -8,7 +8,7 @@ public class FileReader {
     private FileReader() {
     }
 
-    private static String STATIC_DIRECTORY_PATH = "./src/main/resources/static";
+    private static final String STATIC_DIRECTORY_PATH = "./src/main/resources/static";
 
     public static boolean hasFile(String path) {
         File file = new File(STATIC_DIRECTORY_PATH + path);

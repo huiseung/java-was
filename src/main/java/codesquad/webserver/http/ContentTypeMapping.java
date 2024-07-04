@@ -5,7 +5,7 @@ import java.util.Map;
 import java.util.Set;
 
 public class ContentTypeMapping {
-    private ContentTypeMapping(){};
+    private ContentTypeMapping(){}
     private static final Map<String, String> contentTypes = new HashMap<>();
     static{
         contentTypes.put(".html", "text/html;charset=utf-8");
