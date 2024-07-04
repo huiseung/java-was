@@ -42,7 +42,7 @@ public class HttpResponse {
         String bodyMessage = "redirect";
         HttpHeader httpHeader = new HttpHeader();
         httpHeader.add("Location", "/index");
-        return new HttpResponse(303, "See Other", httpHeader, "bodyMessage");
+        return new HttpResponse(303, "See Other", httpHeader, bodyMessage);
     }
 
     public static HttpResponse createNotFoundResponse(){

@@ -3,8 +3,6 @@ package codesquad.webserver.http;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 public class HttpHeader {
     private final Map<String, String> headers = new HashMap<>();
