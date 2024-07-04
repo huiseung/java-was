@@ -40,6 +40,11 @@ public class HttpResponse {
         writeResponseBody(contents);
     }
 
+    public void setNotFound(){
+        writeNotFoundStatusLine();
+        setBodyMessage("404 Not Found");
+    }
+
     public void sendAndKeepConnection(){
         try{
             outputStream.flush();
@@ -51,6 +56,14 @@ public class HttpResponse {
     private void writeSuccessStatusLine(){
         try{
             outputStream.writeBytes("HTTP/1.1 200 OK\r\n");
+        } catch (IOException e) {
+            log.error(e.getMessage(), e);
+        }
+    }
+
+    private void writeNotFoundStatusLine(){
+        try{
+            outputStream.writeBytes("HTTP/1.1 404 NOT_FOUND\r\n");
         } catch (IOException e) {
             log.error(e.getMessage(), e);
         }

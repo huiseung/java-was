@@ -1,7 +1,7 @@
 package codesquad.webserver;
 
 import codesquad.handler.Handler;
-import codesquad.handler.HandlerMapping;
+import codesquad.handler.HandlerSelector;
 import codesquad.http.HttpRequest;
 import codesquad.http.HttpResponse;
 
@@ -29,9 +29,10 @@ public class RequestHandler implements Runnable {
             HttpRequest request = new HttpRequest(inputStream);
             log.debug("request: {}", request);
             HttpResponse response = new HttpResponse(outputStream);
-            Handler handler = HandlerMapping.getHandler(request.getPath());
+            //
+            Handler handler = HandlerSelector.getHandler(request.getPath());
             if (handler == null) {
-                response.setBodyFile(request.getPath());
+                response.setNotFound();
             } else {
                 handler.printClassName();
                 handler.handle(request, response);
