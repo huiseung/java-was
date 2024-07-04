@@ -1,5 +1,7 @@
 package codesquad.webserver;
 
+import codesquad.adapter.HandlerAdapter;
+import codesquad.adapter.OperationHandlerAdapter;
 import codesquad.handler.Handler;
 import codesquad.handler.HandlerSelector;
 import codesquad.http.HttpRequest;
@@ -29,8 +31,14 @@ public class RequestHandler implements Runnable {
             HttpRequest request = new HttpRequest(inputStream);
             log.debug("request: {}", request);
             HttpResponse response = new HttpResponse(outputStream);
-            //
+            // handler 를 찾는다
             Handler handler = HandlerSelector.getHandler(request);
+            // handler 를 처리 할 수 있는 adapter 를 찾는다
+            // (ResourceHttpRequestHandler, HttpRequestHandlerAdapter, /path가 없으면 adapter가 handler에게 맞겼는데 오류 발생)
+            HandlerAdapter handlerAdapter = new OperationHandlerAdapter();
+            // adapter 에게 handle 시킨다
+            handlerAdapter.handle(request, response, handler);
+
             if (handler == null) {
                 response.setNotFound();
             } else {
