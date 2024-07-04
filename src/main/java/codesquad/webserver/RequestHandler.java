@@ -30,7 +30,7 @@ public class RequestHandler implements Runnable {
             log.debug("request: {}", request);
             HttpResponse response = new HttpResponse(outputStream);
             //
-            Handler handler = HandlerSelector.getHandler(request.getPath());
+            Handler handler = HandlerSelector.getHandler(request);
             if (handler == null) {
                 response.setNotFound();
             } else {
