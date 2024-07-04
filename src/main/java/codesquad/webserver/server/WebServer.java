@@ -1,5 +1,7 @@
 package codesquad.webserver.server;
 
+import codesquad.webserver.handler.DynamicResourceHandlerInitializer;
+import codesquad.webserver.handler.DynamicResourceHandler;
 import codesquad.webserver.handler.FrontHandler;
 import java.io.IOException;
 import java.net.ServerSocket;
@@ -13,6 +15,7 @@ public class WebServer {
     private final Logger log = LoggerFactory.getLogger(WebServer.class);
     private ExecutorService executorService;
     private ServerSocket serverSocket;
+    private DynamicResourceHandler dynamicResourceHandler;
 
 
     public WebServer() {
@@ -20,6 +23,8 @@ public class WebServer {
             int N_THREADS = 10;
             this.executorService = Executors.newFixedThreadPool(N_THREADS);
             this.serverSocket = new ServerSocket(PORT);
+            this.dynamicResourceHandler = new DynamicResourceHandler();
+            DynamicResourceHandlerInitializer.init(dynamicResourceHandler);
         } catch (IOException e) {
             log.error(e.getMessage(), e);
         }
@@ -29,7 +34,7 @@ public class WebServer {
         while(true){
             try{
                 log.info("Listening for connection on port 8080 ....");
-                executorService.submit(new FrontHandler(serverSocket.accept()));
+                executorService.submit(new FrontHandler(serverSocket.accept(), dynamicResourceHandler));
             } catch (IOException e) {
                 log.error(e.getMessage(), e);
             }

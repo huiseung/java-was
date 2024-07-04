@@ -1,30 +1,30 @@
 package codesquad.webserver.util;
 
-import java.io.File;
-import java.io.FileInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 
 public class FileReader {
     private FileReader() {
     }
 
-    private static final String STATIC_DIRECTORY_PATH = "./src/main/resources/static";
 
     public static boolean hasFile(String path) {
-        File file = new File(STATIC_DIRECTORY_PATH + path);
-        return file.exists();
+        return FileReader.class.getResource("/static" + path) != null;
     }
 
     public static byte[] readFile(String path) throws IOException {
-        File file = new File(STATIC_DIRECTORY_PATH + path);
+        try (InputStream inputStream = FileReader.class.getResourceAsStream("/static" + path)) {
+            ByteArrayOutputStream buffer = new ByteArrayOutputStream();
+            int nRead;
+            byte[] data = new byte[1024];
 
-        FileInputStream fileInputStream = new FileInputStream(file);
-        byte[] content = new byte[(int) file.length()];
-        int bytesRead = fileInputStream.read(content);
-        if (bytesRead != file.length()) {
-            throw new IOException("Could not read file");
+            while ((nRead = inputStream.read(data, 0, data.length)) != -1) {
+                buffer.write(data, 0, nRead);
+            }
+
+            buffer.flush();
+            return buffer.toByteArray();
         }
-        fileInputStream.close();
-        return content;
     }
 }

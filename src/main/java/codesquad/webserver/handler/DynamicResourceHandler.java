@@ -5,8 +5,11 @@ import codesquad.webserver.http.HttpRequest;
 import codesquad.webserver.http.HttpResponse;
 import java.util.HashMap;
 import java.util.Map;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class DynamicResourceHandler implements Handler{
+    private final Logger log = LoggerFactory.getLogger(DynamicResourceHandler.class);
     private Map<HttpMethod, Map<String, HandlerMethod>> routes = new HashMap<>();
 
     {
@@ -15,6 +18,7 @@ public class DynamicResourceHandler implements Handler{
         }
     }
     public HttpResponse handle(HttpRequest request){
+        log.info("DynamicResourceHandler handle");
         HandlerMethod handlerMethod = routes.get(request.getHttpMethod()).get(request.getPath());
         return handlerMethod.invoke(request);
     }

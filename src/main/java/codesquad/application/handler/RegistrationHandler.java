@@ -1,6 +1,7 @@
 package codesquad.application.handler;
 
 import codesquad.application.domain.User;
+import codesquad.webserver.annotation.Handler;
 import codesquad.webserver.annotation.RequestMapping;
 import codesquad.webserver.http.HttpMethod;
 import codesquad.webserver.http.HttpRequest;
@@ -8,6 +9,7 @@ import codesquad.webserver.http.HttpResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+@Handler
 public class RegistrationHandler {
     private final Logger log = LoggerFactory.getLogger(RegistrationHandler.class);
 

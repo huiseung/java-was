@@ -22,4 +22,12 @@ public class HttpRequest {
     public HttpHeader getHttpHeader() {
         return httpHeader;
     }
+
+    @Override
+    public String toString() {
+        return "HttpRequest{" +
+                startLine +
+                ", " + httpHeader +
+                '}';
+    }
 }

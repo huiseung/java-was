@@ -18,10 +18,8 @@ public class FrontHandler implements Runnable{
     private Socket connect;
     private List<Handler> handlers;
 
-    public FrontHandler(Socket connect) {
+    public FrontHandler(Socket connect, DynamicResourceHandler dynamicResourceHandler) {
         this.connect = connect;
-        DynamicResourceHandler dynamicResourceHandler = new DynamicResourceHandler();
-        DyanmicResourceHandlerInitializer.init(dynamicResourceHandler);
         handlers = List.of(dynamicResourceHandler, new StaticResourceHandler());
     }
 
