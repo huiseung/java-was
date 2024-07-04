@@ -16,6 +16,6 @@ public class RegisterApiHandler extends OperationHandler {
         String password = query[2].split("=")[1];
         User user = new User(userId, password, nickname);
         log.debug("user: "+user);
-        response.setBodyMessage(user.toString());
+        response.setRedirection("/index");
     }
 }

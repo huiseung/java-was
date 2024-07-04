@@ -45,6 +45,13 @@ public class HttpResponse {
         setBodyMessage("404 Not Found");
     }
 
+    public void setRedirection(String path){
+        writeRedirectStatusLine();
+        headers.put("Location", path);
+        headers.put("Content-Type", ContentTypeMapping.getContentType(".html"));
+        writeHeader();
+    }
+
     public void sendAndKeepConnection(){
         try{
             outputStream.flush();
@@ -56,6 +63,14 @@ public class HttpResponse {
     private void writeSuccessStatusLine(){
         try{
             outputStream.writeBytes("HTTP/1.1 200 OK\r\n");
+        } catch (IOException e) {
+            log.error(e.getMessage(), e);
+        }
+    }
+
+    private void writeRedirectStatusLine(){
+        try{
+            outputStream.writeBytes("HTTP/1.1 302 Found\r\n");
         } catch (IOException e) {
             log.error(e.getMessage(), e);
         }
