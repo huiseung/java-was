@@ -1,4 +1,4 @@
-package codesquad.util;
+package codesquad.webserver.util;
 
 import codesquad.webserver.util.FileReader;
 import org.junit.jupiter.api.Test;

@@ -65,7 +65,6 @@ public class ClassFinder {
                 String className = packageName.isEmpty() ?
                         file.getName().substring(0, file.getName().length() - 6) :
                         packageName + '.' + file.getName().substring(0, file.getName().length() - 6);
-                log.info("directory class name: "+className);
                 classes.add(Class.forName(className));
             }
         }
@@ -84,7 +83,6 @@ public class ClassFinder {
                 String entryName = entry.getName();
                 if (entryName.startsWith(basePath) && entryName.endsWith(".class")) {
                     String className = entryName.substring(0, entryName.length() - 6).replace('/', '.');
-                    log.info("jar class name: "+className);
                     if(isValidClassName(className)){
                         classes.add(Class.forName(className));
                     }
