@@ -80,8 +80,6 @@ public class HttpResponse {
         return "HttpResponse{" +
                 "statusCode=" + statusCode +
                 ", statusMessage='" + statusMessage + '\'' +
-                ", httpHeader=" + httpHeader +
-                ", contents=" + Arrays.toString(contents) +
                 '}';
     }
 }
