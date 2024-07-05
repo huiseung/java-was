@@ -1,6 +1,5 @@
 package codesquad.webserver.http;
 
-import java.util.Arrays;
 import java.util.Set;
 
 public class HttpResponse {

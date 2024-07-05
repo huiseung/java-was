@@ -1,6 +1,5 @@
 package codesquad.webserver.server;
 
-import codesquad.application.Main;
 import codesquad.webserver.handler.DynamicResourceHandlerInitializer;
 import codesquad.webserver.handler.DynamicResourceHandler;
 import codesquad.webserver.handler.FrontHandler;
