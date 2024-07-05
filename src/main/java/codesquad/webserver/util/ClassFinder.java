@@ -23,7 +23,7 @@ public class ClassFinder {
 
     public static List<Class<?>> findAllClass(Class<?> mainClass) {
         String basePackage = mainClass.getPackage().getName();
-        basePackage = basePackage.substring(0, basePackage.lastIndexOf('.'));  // application 패키지명 추출
+//        basePackage = basePackage.substring(0, basePackage.lastIndexOf('.'));  // application 패키지명 추출
         List<Class<?>> classes = new ArrayList<>();
         try {
             ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
@@ -35,7 +35,7 @@ public class ClassFinder {
                 classes.addAll(findClasses(resource, basePackage));
             }
         } catch (IOException | ClassNotFoundException e) {
-            e.printStackTrace();
+            log.error(e.getMessage(), e);
         }
         return classes;
     }
