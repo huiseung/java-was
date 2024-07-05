@@ -12,8 +12,7 @@ import org.slf4j.LoggerFactory;
 
 public class DynamicResourceHandlerInitializer {
     private static final Logger log = LoggerFactory.getLogger(DynamicResourceHandler.class);
-    public static void init(DynamicResourceHandler dynamicResourceHandler){
-        List<Class<?>> classes =  ClassFinder.findAllClass(Main.class);
+    public static void init(DynamicResourceHandler dynamicResourceHandler, List<Class<?>> classes){
         log.info("classes length: {}", classes.size());
         for(Class<?> clazz : classes){
             try{

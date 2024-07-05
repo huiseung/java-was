@@ -2,8 +2,7 @@ package codesquad.webserver.util;
 
 import java.io.File;
 import java.io.IOException;
-import java.net.URI;
-import java.net.URISyntaxException;
+
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Enumeration;
@@ -19,16 +18,16 @@ public class ClassFinder {
 
     private ClassFinder() {
     }
+
     public static List<Class<?>> findAllClass(String basePackage) {
-//        basePackage = basePackage.substring(0, basePackage.lastIndexOf('.'));  // application 패키지명 추출
         List<Class<?>> classes = new ArrayList<>();
         try {
             ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
             String path = basePackage.replace('.', '/');
             Enumeration<URL> resources = classLoader.getResources(path);
-
             while (resources.hasMoreElements()) {
                 URL resource = resources.nextElement();
+                log.info("resource: "+resource.getFile());
                 classes.addAll(findClasses(resource, basePackage));
             }
         } catch (IOException | ClassNotFoundException e) {
@@ -44,7 +43,8 @@ public class ClassFinder {
         String protocol = resource.getProtocol();
         if ("file".equals(protocol)) {
             classes.addAll(findClassesFromDirectory(new File(resource.getFile()), basePackage));
-        } else if ("jar".equals(protocol)) {
+        }
+        else if ("jar".equals(protocol)) {
             classes.addAll(findClassesFromJar(resource, basePackage));
         }
 
@@ -60,9 +60,12 @@ public class ClassFinder {
         File[] files = directory.listFiles();
         for (File file : files) {
             if (file.isDirectory()) {
-                classes.addAll(findClassesFromDirectory(file, packageName + "." + file.getName()));
+                classes.addAll(findClassesFromDirectory(file, packageName.isEmpty() ? file.getName() : packageName + "." + file.getName()));
             } else if (file.getName().endsWith(".class")) {
-                String className = packageName + '.' + file.getName().substring(0, file.getName().length() - 6);
+                String className = packageName.isEmpty() ?
+                        file.getName().substring(0, file.getName().length() - 6) :
+                        packageName + '.' + file.getName().substring(0, file.getName().length() - 6);
+                log.info("directory class name: "+className);
                 classes.add(Class.forName(className));
             }
         }
@@ -81,10 +84,17 @@ public class ClassFinder {
                 String entryName = entry.getName();
                 if (entryName.startsWith(basePath) && entryName.endsWith(".class")) {
                     String className = entryName.substring(0, entryName.length() - 6).replace('/', '.');
-                    classes.add(Class.forName(className));
+                    log.info("jar class name: "+className);
+                    if(isValidClassName(className)){
+                        classes.add(Class.forName(className));
+                    }
                 }
             }
         }
         return classes;
+    }
+
+    private static boolean isValidClassName(String className) {
+        return !className.startsWith("META-INF") && !className.equals("module-info");
     }
 }
