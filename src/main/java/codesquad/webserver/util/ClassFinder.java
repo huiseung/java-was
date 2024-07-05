@@ -19,10 +19,7 @@ public class ClassFinder {
 
     private ClassFinder() {
     }
-
-
-    public static List<Class<?>> findAllClass(Class<?> mainClass) {
-        String basePackage = mainClass.getPackage().getName();
+    public static List<Class<?>> findAllClass(String basePackage) {
 //        basePackage = basePackage.substring(0, basePackage.lastIndexOf('.'));  // application 패키지명 추출
         List<Class<?>> classes = new ArrayList<>();
         try {
