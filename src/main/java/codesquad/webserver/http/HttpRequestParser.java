@@ -18,8 +18,8 @@ public class HttpRequestParser {
         HttpRequestStartLine startLine = new HttpRequestStartLine(readStartLine(br));
         HttpHeader header = readHeader(br);
         HttpBody body = null;
-        if(header.hasKey("Content-Length")){
-            body = readBody(br, Integer.parseInt(header.getValue("Content-Length")));
+        if(header.hasKey("Content-Type") && header.hasKey("Content-Length")){
+            body = readBody(br, header.getValue("Content-Type"), Integer.parseInt(header.getValue("Content-Length")));
         }
         return new HttpRequest(startLine, header, body);
     }
@@ -52,12 +52,21 @@ public class HttpRequestParser {
         }
     }
 
-    private static HttpBody readBody(BufferedReader br, int contentLength){
+    private static HttpBody readBody(BufferedReader br, String contentType, int contentLength){
         try{
             char[] buffer = new char[contentLength];
             br.read(buffer, 0 , contentLength);
             String mesage = new String(buffer);
-            return new HttpBody(JsonParser.parse(mesage));
+            System.out.println("message: " + mesage);
+            if(contentType.equals("application/json")){
+                return new HttpBody(JsonParser.parseJson(mesage));
+            }
+            else if(contentType.equals("application/x-www-form-urlencoded")){
+                return new HttpBody(JsonParser.parseForm(mesage));
+            }
+            else {
+                throw new IOException("");
+            }
         } catch (IOException e) {
             throw new RuntimeException(e);
         }

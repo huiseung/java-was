@@ -34,6 +34,7 @@ public class HttpRequest {
         return "HttpRequest{" +
                 startLine +
                 ", " + httpHeader +
+                ", " + httpBody +
                 '}';
     }
 }

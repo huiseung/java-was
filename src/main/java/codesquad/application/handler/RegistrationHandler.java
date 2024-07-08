@@ -31,6 +31,6 @@ public class RegistrationHandler {
     public HttpResponse create2(HttpRequest request){
         Map<String, Object> bodyMessage = request.getHttpBody();
         System.out.println("body: " + bodyMessage);
-        return HttpResponse.createOkResponse("");
+        return HttpResponse.createOkResponse(bodyMessage.toString());
     }
 }

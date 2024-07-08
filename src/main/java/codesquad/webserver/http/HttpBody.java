@@ -12,4 +12,9 @@ public class HttpBody {
     public Map<String, Object> getBody() {
         return body;
     }
+
+    @Override
+    public String toString() {
+        return "body= " + body.toString();
+    }
 }
