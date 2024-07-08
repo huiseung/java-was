@@ -30,7 +30,7 @@ public class RegistrationHandler {
     @RequestMapping(method = HttpMethod.POST, path="/create")
     public HttpResponse create2(HttpRequest request){
         Map<String, Object> bodyMessage = request.getHttpBody();
-        System.out.println("body: " + bodyMessage);
-        return HttpResponse.createOkResponse(bodyMessage.toString());
+        log.debug("body: " + bodyMessage);
+        return HttpResponse.createRedirectResponse();
     }
 }
