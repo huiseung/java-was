@@ -9,6 +9,8 @@ import codesquad.webserver.http.HttpResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.Map;
+
 @Handler
 public class RegistrationHandler {
     private final Logger log = LoggerFactory.getLogger(RegistrationHandler.class);
@@ -23,5 +25,12 @@ public class RegistrationHandler {
         User user = new User(userId, password, nickname);
         log.debug("user: "+user);
         return HttpResponse.createRedirectResponse();
+    }
+
+    @RequestMapping(method = HttpMethod.POST, path="/create")
+    public HttpResponse create2(HttpRequest request){
+        Map<String, Object> bodyMessage = request.getHttpBody();
+        System.out.println("body: " + bodyMessage);
+        return HttpResponse.createOkResponse("");
     }
 }
