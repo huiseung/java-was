@@ -1,12 +1,12 @@
 package codesquad.application.domain;
 
 public class User {
-    private final String userId;
+    private final String username;
     private final String password;
     private final String nickname;
 
-    public User(String userId, String password, String nickname) {
-        this.userId = userId;
+    public User(String username, String password, String nickname) {
+        this.username = username;
         this.password = password;
         this.nickname = nickname;
     }
@@ -14,9 +14,9 @@ public class User {
     @Override
     public String toString() {
         return "User{" +
-                "userId='" + userId + '\'' +
-                ", password='" + password + '\'' +
-                ", nickname='" + nickname + '\'' +
+                "username=" + username + '\'' +
+                ", password=" + password + '\'' +
+                ", nickname=" + nickname + '\'' +
                 '}';
     }
 }

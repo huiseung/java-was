@@ -1,5 +1,7 @@
 package codesquad.application.handler;
 
+import codesquad.application.database.UserDatabase;
+import codesquad.application.domain.User;
 import codesquad.webserver.annotation.Handler;
 import codesquad.webserver.annotation.RequestMapping;
 import codesquad.webserver.http.HttpMethod;
@@ -16,7 +18,12 @@ public class RegistrationHandler {
     @RequestMapping(method = HttpMethod.POST, path="/create")
     public HttpResponse create2(HttpRequest request){
         Map<String, Object> bodyMessage = request.getHttpBody();
-        log.debug("body: " + bodyMessage);
+        String username = (String) bodyMessage.get("username");
+        String password = (String) bodyMessage.get("password");
+        String nickname = (String) bodyMessage.get("nickname");
+        log.debug("request body: " + username + " " + nickname + " " + password);
+        User user = new User(username, password, nickname);
+        UserDatabase.getInstance().add(username, user);
         return HttpResponse.createRedirectResponse();
     }
 }
