@@ -2,6 +2,7 @@ package codesquad.application.handler;
 
 import codesquad.application.database.UserDatabase;
 import codesquad.application.domain.User;
+import codesquad.application.session.CookieExtractor;
 import codesquad.application.session.Session;
 import codesquad.webserver.annotation.Handler;
 import codesquad.webserver.annotation.RequestMapping;
@@ -14,8 +15,9 @@ import org.slf4j.LoggerFactory;
 import java.util.Map;
 
 @Handler
-public class SignUpHandler {
+public class AuthHandler {
     private final Logger log = LoggerFactory.getLogger(RegistrationHandler.class);
+
     @RequestMapping(method = HttpMethod.POST, path="/login")
     public HttpResponse login(HttpRequest request){
         Map<String, Object> bodyMessage = request.getHttpBody();
@@ -26,9 +28,24 @@ public class SignUpHandler {
         if(user == null || !user.checkPassword(password)){
             return HttpResponse.createRedirectResponse("/login-failed");
         }
-        String sid = Session.getInstance().addUser(user);
+        String sessionkey = Session.getInstance().addUser(user);
         HttpResponse response = HttpResponse.createRedirectResponse("/index");
-        response.setCookie(sid);
+        response.setCookie(sessionkey);
+        return response;
+    }
+
+    @RequestMapping(method = HttpMethod.POST, path="/logout")
+    public HttpResponse logout(HttpRequest request){
+        String sid = CookieExtractor.getSid(request);
+        log.debug("logout: "+sid);
+        User sessionUser = Session.getInstance().getUser(sid);
+        User savedUser = UserDatabase.getInstance().get(sessionUser.getUserName());
+        log.debug("sessionUser: "+sessionUser + " savedUser: "+savedUser);
+        if(!sessionUser.equals(savedUser)){
+            return HttpResponse.createNotFoundResponse();
+        }
+        HttpResponse response = HttpResponse.createRedirectResponse("/index");
+        response.setCookie("");
         return response;
     }
 }

@@ -20,7 +20,9 @@ public class UserHandler {
     @RequestMapping(method = HttpMethod.GET, path="/me")
     public HttpResponse me(HttpRequest request){
         String sid = CookieExtractor.getSid(request);
-        log.debug("me: "+sid);
+        if(sid == null){
+            return HttpResponse.createOkResponse("NO_USER");
+        }
         User user = Session.getInstance().getUser(sid);
         return HttpResponse.createOkResponse(user.getNickname());
     }

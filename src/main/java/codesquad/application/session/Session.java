@@ -33,4 +33,8 @@ public class Session {
     public boolean hasUser(String key){
         return session.containsKey(key);
     }
+
+    public User getUser(String key){
+        return session.get(key);
+    }
 }
