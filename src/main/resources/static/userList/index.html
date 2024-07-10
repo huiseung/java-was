@@ -22,7 +22,7 @@
         fetch('/me')
             .then(response => response.text())
             .then(data => {
-                if (data === 'NO_USER') {
+                if (data === 'NO_USER' || data == "Not Found") {
                     // 인증되지 않은 사용자는 로그인 페이지로 리다이렉트
                     window.location.href = '/login';
                 } else {
@@ -52,24 +52,31 @@
         if (users.length === 0) {
             userListElement.innerHTML = '<p>표시할 사용자가 없습니다.</p>';
         } else {
-            const ul = document.createElement('ul');
+             const table = document.createElement('table');
+
+            // 테이블 헤더 생성
+            const thead = document.createElement('thead');
+            thead.innerHTML = `
+                <tr>
+                    <th>Username</th>
+                    <th>Nickname</th>
+                </tr>
+            `;
+            table.appendChild(thead);
+
+            // 테이블 본문 생성
+            const tbody = document.createElement('tbody');
             users.forEach(user => {
-                const li = document.createElement('li');
-                li.innerHTML = `
-                    <div class="user-info">
-                        <span><strong>Username:</strong> ${user.username}, </span>
-                        <span><strong>Nickname:</strong> ${user.nickname}</span>
-                    </div>
+                const tr = document.createElement('tr');
+                tr.innerHTML = `
+                    <td>${user.username}</td>
+                    <td>${user.nickname}</td>
                 `;
-                ul.appendChild(li);
-                // 구분선 추가
-                const divider = document.createElement('hr');
-                divider.style.margin = '15px 0';
-                divider.style.border = 'none';
-                divider.style.borderTop = '1px solid #eee';
-                ul.appendChild(divider);
+                tbody.appendChild(tr);
             });
-            userListElement.appendChild(ul);
+            table.appendChild(tbody);
+
+            userListElement.appendChild(table);
         }
     }
 </script>
