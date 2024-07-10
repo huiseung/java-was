@@ -30,6 +30,10 @@ public class Session {
         return key;
     }
 
+    public void deleteUser(String key){
+        session.remove(key);
+    }
+
     public boolean hasUser(String key){
         return session.containsKey(key);
     }

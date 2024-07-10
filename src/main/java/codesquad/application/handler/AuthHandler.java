@@ -44,6 +44,7 @@ public class AuthHandler {
         if(!sessionUser.equals(savedUser)){
             return HttpResponse.createNotFoundResponse();
         }
+        Session.getInstance().deleteUser(sid);
         HttpResponse response = HttpResponse.createRedirectResponse("/index");
         response.setCookie("");
         return response;
