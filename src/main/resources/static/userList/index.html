@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <link href="../reset.css" rel="stylesheet"/>
+    <link href="../global.css" rel="stylesheet"/>
+    <link href="../main.css" rel="stylesheet"/>
+    <link href="/userList/userlist.css" rel="stylesheet"/>
+</head>
+<body>
+<div class="container">
+    <div class="header">
+        <h1 class="page-title">사용자 목록</h1>
+        <a href="/index" class="btn btn_contained btn_size_m">홈</a>
+    </div>
+    <div id="userList"></div>
+</div>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // 사용자 인증 확인
+        fetch('/me')
+            .then(response => response.text())
+            .then(data => {
+                if (data === 'NO_USER') {
+                    // 인증되지 않은 사용자는 로그인 페이지로 리다이렉트
+                    window.location.href = '/login';
+                } else {
+                    // 인증된 사용자는 사용자 목록 가져오기
+                    fetchUserList();
+                }
+            })
+            .catch(error => {
+                console.error('인증 확인 중 오류 발생:', error);
+            });
+    });
+
+    function fetchUserList() {
+        fetch('/api/users/list')
+            .then(response => response.json())
+            .then(users => {
+                console.log(users);
+                displayUserList(users);
+            })
+            .catch(error => {
+                console.error('사용자 목록 가져오기 중 오류 발생:', error);
+            });
+    }
+
+    function displayUserList(users) {
+        const userListElement = document.getElementById('userList');
+        if (users.length === 0) {
+            userListElement.innerHTML = '<p>표시할 사용자가 없습니다.</p>';
+        } else {
+            const ul = document.createElement('ul');
+            users.forEach(user => {
+                const li = document.createElement('li');
+                li.innerHTML = `
+                    <div class="user-info">
+                        <span><strong>Username:</strong> ${user.username}, </span>
+                        <span><strong>Nickname:</strong> ${user.nickname}</span>
+                    </div>
+                `;
+                ul.appendChild(li);
+                // 구분선 추가
+                const divider = document.createElement('hr');
+                divider.style.margin = '15px 0';
+                divider.style.border = 'none';
+                divider.style.borderTop = '1px solid #eee';
+                ul.appendChild(divider);
+            });
+            userListElement.appendChild(ul);
+        }
+    }
+</script>
+</body>
+</html>
