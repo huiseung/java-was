@@ -3,7 +3,7 @@ package codesquad.application.handler;
 import codesquad.application.database.UserDatabase;
 import codesquad.application.domain.User;
 import codesquad.application.session.CookieExtractor;
-import codesquad.application.session.Session;
+import codesquad.application.session.SessionManager;
 import codesquad.webserver.annotation.Handler;
 import codesquad.webserver.annotation.RequestMapping;
 import codesquad.webserver.http.HttpMethod;
@@ -28,7 +28,7 @@ public class AuthHandler {
         if(user == null || !user.checkPassword(password)){
             return HttpResponse.createRedirectResponse("/login-failed");
         }
-        String sessionkey = Session.getInstance().addUser(user);
+        String sessionkey = SessionManager.getInstance().addUser(user);
         HttpResponse response = HttpResponse.createRedirectResponse("/index");
         response.setCookie(sessionkey);
         return response;
@@ -38,13 +38,13 @@ public class AuthHandler {
     public HttpResponse logout(HttpRequest request){
         String sid = CookieExtractor.getSid(request);
         log.debug("logout: "+sid);
-        User sessionUser = Session.getInstance().getUser(sid);
+        User sessionUser = SessionManager.getInstance().getUser(sid);
         User savedUser = UserDatabase.getInstance().get(sessionUser.getUserName());
         log.debug("sessionUser: "+sessionUser + " savedUser: "+savedUser);
         if(!sessionUser.equals(savedUser)){
             return HttpResponse.createNotFoundResponse();
         }
-        Session.getInstance().deleteUser(sid);
+        SessionManager.getInstance().deleteUser(sid);
         HttpResponse response = HttpResponse.createRedirectResponse("/index");
         response.removeCookie();
         return response;

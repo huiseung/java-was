@@ -4,7 +4,7 @@ package codesquad.application.handler;
 import codesquad.application.database.UserDatabase;
 import codesquad.application.domain.User;
 import codesquad.application.session.CookieExtractor;
-import codesquad.application.session.Session;
+import codesquad.application.session.SessionManager;
 import codesquad.webserver.annotation.Handler;
 import codesquad.webserver.annotation.RequestMapping;
 import codesquad.webserver.http.HttpMethod;
@@ -15,7 +15,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.Collection;
-import java.util.List;
 
 
 @Handler
@@ -28,7 +27,7 @@ public class UserHandler {
         if(sid == null){
             return HttpResponse.createOkResponse("NO_USER");
         }
-        User user = Session.getInstance().getUser(sid);
+        User user = SessionManager.getInstance().getUser(sid);
         return HttpResponse.createOkResponse(user.getNickname());
     }
 
