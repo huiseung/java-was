@@ -1,5 +1,6 @@
 package codesquad.webserver.handler;
 
+import codesquad.webserver.exception.BadRequestException;
 import codesquad.webserver.http.HttpRequest;
 import codesquad.webserver.http.HttpRequestParser;
 import codesquad.webserver.http.HttpResponse;
@@ -34,13 +35,13 @@ public class FrontHandler implements Runnable{
                     .filter(handler -> handler.canHandle(request))
                     .findFirst()
                     .map(handler -> handler.handle(request))
-                    .orElseThrow(() -> new IllegalStateException("No Handler Found For Request"));
+                    .orElseThrow(() -> new BadRequestException("No Handler Found For Request"));
             log.info("response: {}", response);
             sendResponse(response);
             connect.close();
         }
-        catch (IllegalStateException e){
-            sendResponse(HttpResponse.createNotFoundResponse());
+        catch (BadRequestException e){
+            sendResponse(HttpResponse.notFound());
         }
         catch (IOException e){
             log.error(e.getMessage(), e);
