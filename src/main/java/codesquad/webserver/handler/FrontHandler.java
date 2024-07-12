@@ -35,16 +35,18 @@ public class FrontHandler implements Runnable{
                     .filter(handler -> handler.canHandle(request))
                     .findFirst()
                     .map(handler -> handler.handle(request))
-                    .orElseThrow(() -> new BadRequestException("No Handler Found For Request"));
+                    .orElse(HttpResponse.badRequest());
             log.info("response: {}", response);
             sendResponse(response);
-            connect.close();
-        }
-        catch (BadRequestException e){
-            sendResponse(HttpResponse.notFound());
         }
         catch (IOException e){
-            log.error(e.getMessage(), e);
+            sendResponse(HttpResponse.notFound());
+        }finally {
+            try{
+                connect.close();
+            } catch (IOException e) {
+                log.error(e.getMessage(), e);
+            }
         }
     }
 
@@ -56,5 +58,4 @@ public class FrontHandler implements Runnable{
             throw new RuntimeException(e);
         }
     }
-
 }
