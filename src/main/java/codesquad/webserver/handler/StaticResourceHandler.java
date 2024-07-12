@@ -18,16 +18,19 @@ public class StaticResourceHandler implements Handler {
         return handle(request.getPath());
     }
 
-    public static HttpResponse handle(String path) {
+    public static HttpResponse handle(String path){
         log.info("StaticResourceHandler handle");
         if (!FileReader.hasFile(path)) {
-            return HttpResponse.createNotFoundResponse();
+            return HttpResponse.notFound();
         }
-        String content = FileReader.readFileToString(path);
-        byte[] body = FileReader.stringToByteArray(content);
-        String fileExtension = path.substring(path.lastIndexOf("."));
-        return HttpResponse.createOkResponse(fileExtension, body);
-
+        try{
+            String content = FileReader.readFileToString(path);
+            byte[] body = FileReader.stringToByteArray(content);
+            String fileExtension = path.substring(path.lastIndexOf("."));
+            return HttpResponse.ok(fileExtension, body);
+        }catch (IOException e){
+            return HttpResponse.notFound();
+        }
     }
 
     public boolean canHandle(HttpRequest request) {

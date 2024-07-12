@@ -26,10 +26,10 @@ public class AuthHandler {
         log.debug("request body: " + username + " " + password);
         User user = UserDatabase.getInstance().get(username);
         if(user == null || !user.checkPassword(password)){
-            return HttpResponse.createRedirectResponse("/login-failed");
+            return HttpResponse.redirect("/login-failed");
         }
         String sessionkey = SessionManager.getInstance().addUser(user);
-        HttpResponse response = HttpResponse.createRedirectResponse("/index");
+        HttpResponse response = HttpResponse.redirect("/index");
         response.setCookie(sessionkey);
         return response;
     }
@@ -42,10 +42,10 @@ public class AuthHandler {
         User savedUser = UserDatabase.getInstance().get(sessionUser.getUserName());
         log.debug("sessionUser: "+sessionUser + " savedUser: "+savedUser);
         if(!sessionUser.equals(savedUser)){
-            return HttpResponse.createNotFoundResponse();
+            return HttpResponse.notFound();
         }
         SessionManager.getInstance().deleteUser(sid);
-        HttpResponse response = HttpResponse.createRedirectResponse("/index");
+        HttpResponse response = HttpResponse.redirect("/index");
         response.removeCookie();
         return response;
     }

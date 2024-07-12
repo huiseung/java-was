@@ -24,6 +24,6 @@ public class RegistrationHandler {
         log.debug("request body: " + username + " " + nickname + " " + password);
         User user = new User(username, password, nickname);
         UserDatabase.getInstance().add(username, user);
-        return HttpResponse.createRedirectResponse("/index");
+        return HttpResponse.redirect("/index");
     }
 }

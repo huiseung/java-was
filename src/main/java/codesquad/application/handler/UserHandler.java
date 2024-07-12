@@ -25,10 +25,10 @@ public class UserHandler {
     public HttpResponse me(HttpRequest request){
         String sid = CookieExtractor.getSid(request);
         if(sid == null){
-            return HttpResponse.createOkResponse("NO_USER");
+            return HttpResponse.ok("NO_USER");
         }
         User user = SessionManager.getInstance().getUser(sid);
-        return HttpResponse.createOkResponse(user.getNickname());
+        return HttpResponse.ok(user.getNickname());
     }
 
     @RequestMapping(method = HttpMethod.GET, path="/api/users/list")
@@ -36,6 +36,6 @@ public class UserHandler {
         Collection<User> users = UserDatabase.getInstance().getUsers();
         String responseBody = JsonStringConverter.collectionToJsonString(users);
         log.debug("users/list: " + responseBody);
-        return HttpResponse.createOkResponse(responseBody);
+        return HttpResponse.ok(responseBody);
     }
 }
