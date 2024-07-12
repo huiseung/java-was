@@ -40,7 +40,8 @@ public class FrontHandler implements Runnable{
             sendResponse(response);
         }
         catch (IOException e){
-            sendResponse(HttpResponse.notFound());
+            log.error("Error get input stream" + e.getMessage(), e);
+            sendResponse(HttpResponse.serverError());
         }finally {
             try{
                 connect.close();
@@ -55,7 +56,7 @@ public class FrontHandler implements Runnable{
             HttpResponseParser.parse(outputStream, response);
             outputStream.flush();
         } catch (IOException e) {
-            throw new RuntimeException(e);
+            log.error(e.getMessage(), e);
         }
     }
 }

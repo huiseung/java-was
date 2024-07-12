@@ -69,6 +69,15 @@ public class HttpResponse {
         return new HttpResponse(400, "Bad Request", httpHeader, bodyMessage);
     }
 
+    public static HttpResponse serverError(){
+        String bodyMessage = "Internal Server Error";
+        HttpHeader httpHeader = new HttpHeader();
+        httpHeader.add("Content-Type", ContentTypeMapping.getContentType(".html"));
+        httpHeader.add("Content-Length", bodyMessage.getBytes().length +"");
+        return new HttpResponse(500, "Internal Server Error", httpHeader, bodyMessage);
+    }
+
+
     public byte[] getContents() {
         return contents;
     }

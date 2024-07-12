@@ -7,12 +7,14 @@ import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class SessionManager {
+    // ToDo: Session 클래스 생성
     private Map<String, User> session;
     private static SessionManager instance;
     private SessionManager(){
         session = new ConcurrentHashMap<>();
     }
-// ToDo: multi thread
+
+    // ToDo: multi thread
     public static SessionManager getInstance(){
         if(instance == null){
             instance = new SessionManager();

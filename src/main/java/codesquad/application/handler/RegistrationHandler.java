@@ -15,6 +15,7 @@ import java.util.Map;
 @Handler
 public class RegistrationHandler {
     private final Logger log = LoggerFactory.getLogger(RegistrationHandler.class);
+
     @RequestMapping(method = HttpMethod.POST, path="/create")
     public HttpResponse create(HttpRequest request){
         Map<String, Object> bodyMessage = request.getHttpBody();
