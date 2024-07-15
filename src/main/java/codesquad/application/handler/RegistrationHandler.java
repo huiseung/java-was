@@ -2,7 +2,7 @@ package codesquad.application.handler;
 
 import codesquad.application.database.UserDatabase;
 import codesquad.application.domain.User;
-import codesquad.webserver.annotation.Handler;
+import codesquad.webserver.annotation.ApiHandler;
 import codesquad.webserver.annotation.RequestMapping;
 import codesquad.webserver.http.HttpMethod;
 import codesquad.webserver.http.HttpRequest;
@@ -12,7 +12,7 @@ import org.slf4j.LoggerFactory;
 
 import java.util.Map;
 
-@Handler
+@ApiHandler
 public class RegistrationHandler {
     private final Logger log = LoggerFactory.getLogger(RegistrationHandler.class);
 

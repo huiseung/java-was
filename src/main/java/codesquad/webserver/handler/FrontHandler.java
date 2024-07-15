@@ -1,6 +1,5 @@
 package codesquad.webserver.handler;
 
-import codesquad.webserver.exception.BadRequestException;
 import codesquad.webserver.http.HttpRequest;
 import codesquad.webserver.http.HttpRequestParser;
 import codesquad.webserver.http.HttpResponse;
@@ -17,7 +16,7 @@ public class FrontHandler implements Runnable{
     private final Logger log = LoggerFactory.getLogger(FrontHandler.class);
 
     private Socket connect;
-    private List<Handler> handlers;
+    private List<ApiHandler> handlers;
 
     public FrontHandler(Socket connect, DynamicResourceHandler dynamicResourceHandler) {
         this.connect = connect;

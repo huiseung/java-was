@@ -11,7 +11,7 @@ import java.util.regex.Pattern;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class StaticResourceHandler implements Handler {
+public class StaticResourceHandler implements ApiHandler {
     private static final Logger log = LoggerFactory.getLogger(DynamicResourceHandler.class);
 
     public HttpResponse handle(HttpRequest request) {

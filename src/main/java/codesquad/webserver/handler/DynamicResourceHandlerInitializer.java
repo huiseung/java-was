@@ -1,6 +1,6 @@
 package codesquad.webserver.handler;
 
-import codesquad.webserver.annotation.Handler;
+import codesquad.webserver.annotation.ApiHandler;
 import codesquad.webserver.annotation.RequestMapping;
 import codesquad.webserver.http.HttpMethod;
 import java.lang.reflect.Method;
@@ -14,7 +14,7 @@ public class DynamicResourceHandlerInitializer {
         log.info("classes length: {}", classes.size());
         for(Class<?> clazz : classes){
             try{
-                if(clazz.isAnnotationPresent(Handler.class)){
+                if(clazz.isAnnotationPresent(ApiHandler.class)){
                     Object handler = clazz.getDeclaredConstructor().newInstance();
                     for(Method method : clazz.getDeclaredMethods()){
                         if(method.isAnnotationPresent(RequestMapping.class)){

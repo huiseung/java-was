@@ -8,7 +8,7 @@ import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class DynamicResourceHandler implements Handler{
+public class DynamicResourceHandler implements ApiHandler {
     private final Logger log = LoggerFactory.getLogger(DynamicResourceHandler.class);
     private Map<HttpMethod, Map<String, HandlerMethod>> routes = new HashMap<>();
 
