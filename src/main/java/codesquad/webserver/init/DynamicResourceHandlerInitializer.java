@@ -45,7 +45,6 @@ public class DynamicResourceHandlerInitializer {
 
     private static Object createHandlerInstance(Class<?> handlerClass, Map<String, Object> databaseInstances) throws Exception {
         Constructor<?>[] constructors = handlerClass.getDeclaredConstructors();
-        log.debug("createHandlerInstance" + handlerClass.getName() + " " + constructors);
         for (Constructor<?> constructor : constructors) {
             Parameter[] parameters = constructor.getParameters();
             if (parameters.length > 0 && UserDataHandler.class.isAssignableFrom(parameters[0].getType())) {
