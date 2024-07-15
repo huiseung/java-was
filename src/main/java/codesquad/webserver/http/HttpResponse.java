@@ -61,6 +61,14 @@ public class HttpResponse {
         return new HttpResponse(404, "NOT FOUND", httpHeader, bodyMessage);
     }
 
+    public static HttpResponse methodNotAllowed(){
+        String bodyMessage = "Method Not Allowed";
+        HttpHeader httpHeader = new HttpHeader();
+        httpHeader.add("Content-Type", ContentTypeMapping.getContentType(".html"));
+        httpHeader.add("Content-Length", bodyMessage.getBytes().length +"");
+        return new HttpResponse(405, "Method Not Allowed", httpHeader, bodyMessage);
+    }
+
     public static HttpResponse badRequest(){
         String bodyMessage = "Bad Request";
         HttpHeader httpHeader = new HttpHeader();
