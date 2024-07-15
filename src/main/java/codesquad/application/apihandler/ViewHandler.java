@@ -1,4 +1,4 @@
-package codesquad.application.handler;
+package codesquad.application.apihandler;
 
 
 import codesquad.webserver.annotation.ApiHandler;

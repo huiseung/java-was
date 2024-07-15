@@ -1,11 +1,9 @@
-package codesquad.application.database;
+package codesquad.application.datahandler;
 
 import codesquad.application.domain.User;
 
 import java.util.Collection;
-import java.util.Collections;
 import java.util.Map;
-import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class UserDatabase {

@@ -1,6 +1,6 @@
-package codesquad.application.handler;
+package codesquad.application.apihandler;
 
-import codesquad.application.database.UserDatabase;
+import codesquad.application.datahandler.UserDatabase;
 import codesquad.application.domain.User;
 import codesquad.webserver.annotation.ApiHandler;
 import codesquad.webserver.annotation.RequestMapping;
