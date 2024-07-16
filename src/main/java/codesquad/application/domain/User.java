@@ -1,6 +1,7 @@
 package codesquad.application.domain;
 
 
+import java.util.Objects;
 
 public class User {
     private final String id;
@@ -40,5 +41,28 @@ public class User {
 
     public String getNickname() {
         return nickname;
+    }
+
+    @Override
+    public String toString() {
+        return "User{" +
+                "id='" + id + '\'' +
+                ", username='" + username + '\'' +
+                ", password='" + password + '\'' +
+                ", nickname='" + nickname + '\'' +
+                '}';
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        User user = (User) o;
+        return Objects.equals(id, user.id) && Objects.equals(username, user.username) && Objects.equals(password, user.password) && Objects.equals(nickname, user.nickname);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, username, password, nickname);
     }
 }
