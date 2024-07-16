@@ -2,8 +2,8 @@ package codesquad.application.domain;
 
 public class Article {
     private String id;
-    private String title;
-    private String content;
+    private final String title;
+    private final String content;
 
     public Article(String title, String content) {
         this.title = title;

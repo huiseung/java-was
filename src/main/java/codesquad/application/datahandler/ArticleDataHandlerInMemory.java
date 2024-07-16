@@ -23,4 +23,9 @@ public class ArticleDataHandlerInMemory implements ArticleDataHandler{
     public List<Article> getAll(){
         return store.values().stream().toList();
     }
+
+    @Override
+    public void deleteAll() {
+        store.clear();
+    }
 }
