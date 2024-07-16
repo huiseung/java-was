@@ -22,10 +22,6 @@ public class UserDataHandlerInMemory implements UserDataHandler{
         return store.values().stream().toList();
     }
 
-    @Override
-    public boolean isExist(String username) {
-        return store.values().stream().anyMatch(e -> e.getUsername().equals(username));
-    }
 
     @Override
     public Optional<User> getByUsername(String username) {
