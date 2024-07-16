@@ -1,13 +1,28 @@
 package codesquad.application.domain;
 
+import java.time.LocalDateTime;
+
 public class Article {
-    private String id;
+    private final String id;
     private final String title;
     private final String content;
+    private final String author;
+    private final LocalDateTime createdDt;
 
-    public Article(String title, String content) {
+    public Article(String id, String title, String content, String author, LocalDateTime createdDt) {
+        this.id = id;
         this.title = title;
         this.content = content;
+        this.author = author;
+        this.createdDt = createdDt;
+    }
+
+    public Article(String title, String content, String author) {
+        this.id = null;
+        this.title = title;
+        this.content = content;
+        this.author = author;
+        this.createdDt = null;
     }
 
     public String getId() {
@@ -22,8 +37,12 @@ public class Article {
         return content;
     }
 
-    public void setId(String id) {
-        this.id = id;
+    public String getAuthor() {
+        return author;
+    }
+
+    public LocalDateTime getCreatedDt() {
+        return createdDt;
     }
 
     @Override
@@ -32,6 +51,8 @@ public class Article {
                 "id='" + id + '\'' +
                 ", title='" + title + '\'' +
                 ", content='" + content + '\'' +
+                ", author='" + author + '\'' +
+                ", createdDt=" + createdDt +
                 '}';
     }
 }
