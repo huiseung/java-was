@@ -24,7 +24,7 @@ public class UserHandler {
     private final UserDataHandler userDb;
 
     public UserHandler(
-            @Specify("UserDataHandlerInMemory") UserDataHandler userDb) {
+            @Specify("UserDataHandlerJdbc") UserDataHandler userDb) {
         this.userDb = userDb;
     }
 

@@ -22,7 +22,7 @@ public class AuthHandler {
     private final UserDataHandler userDb;
 
     public AuthHandler(
-            @Specify("UserDataHandlerInMemory") UserDataHandler userDb) {
+            @Specify("UserDataHandlerJdbc") UserDataHandler userDb) {
         this.userDb = userDb;
     }
 
@@ -45,13 +45,14 @@ public class AuthHandler {
     @RequestMapping(method = HttpMethod.POST, path="/logout")
     public HttpResponse logout(HttpRequest request){
         String sid = CookieExtractor.getSid(request);
-        log.debug("logout: "+sid);
+        log.debug("[logout] sid: "+sid);
         User sessionUser = SessionManager.getInstance().getUser(sid);
         Optional<User> savedUserOptional = userDb.getByUsername(sessionUser.getUsername());
         if(savedUserOptional.isEmpty()){
             return HttpResponse.badRequest();
         }
         User savedUser = savedUserOptional.get();
+        log.debug("[logout] " + "sessionUser: " + sessionUser + "saveUser: "+savedUser);
         if(!sessionUser.equals(savedUser)){
             return HttpResponse.notFound();
         }
