@@ -8,10 +8,12 @@ import codesquad.application.session.SessionManager;
 import codesquad.webserver.annotation.ApiHandler;
 import codesquad.webserver.annotation.RequestMapping;
 import codesquad.webserver.annotation.Specify;
+import codesquad.webserver.http.HttpBody;
 import codesquad.webserver.http.HttpMethod;
 import codesquad.webserver.http.HttpRequest;
 import codesquad.webserver.http.HttpResponse;
 import codesquad.webserver.util.JsonStringConverter;
+import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -29,8 +31,9 @@ public class ArticleHandler {
 
     @RequestMapping(method = HttpMethod.POST, path = "/write")
     public HttpResponse write(HttpRequest request) {
-        String title = (String) request.getHttpBody().get("title");
-        String content = (String) request.getHttpBody().get("content");
+        Map<String, Object> body = request.getHttpBody();
+        String title = (String) body.get("title");
+        String content = (String) body.get("content");
         log.debug("[write] " + "title:" + title + ", content:" + content);
 
         String sid = CookieExtractor.getSid(request);
