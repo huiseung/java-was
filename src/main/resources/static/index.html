@@ -31,122 +31,110 @@
         </ul>
     </header>
     <div class="wrapper">
-        <div class="post">
-            <div class="post__account">
-                <img class="post__account__img"/>
-                <p class="post__account__nickname">account</p>
+        <div id="articleContainer"></div>
+        <template id="articleTemplate">
+            <div class="post">
+                <div class="post__account">
+                    <img class="post__account__img"/>
+                    <p class="post__account__nickname"></p>
+                </div>
+                <p class="post__title"></p>
+                <img class="post__img"/>
+                <div class="post__menu">
+                    <ul class="post__menu__personal">
+                        <li>
+                            <button class="post__menu__btn">
+                                <img src="./img/like.svg"/>
+                            </button>
+                        </li>
+                        <li>
+                            <button class="post__menu__btn">
+                                <img src="./img/sendLink.svg"/>
+                            </button>
+                        </li>
+                    </ul>
+                    <button class="post__menu__btn">
+                        <img src="./img/bookMark.svg"/>
+                    </button>
+                </div>
+                <p class="post__article"></p>
             </div>
-            <img class="post__img"/>
-            <div class="post__menu">
-                <ul class="post__menu__personal">
-                    <li>
-                        <button class="post__menu__btn">
-                            <img src="./img/like.svg"/>
-                        </button>
-                    </li>
-                    <li>
-                        <button class="post__menu__btn">
-                            <img src="./img/sendLink.svg"/>
-                        </button>
-                    </li>
-                </ul>
-                <button class="post__menu__btn">
-                    <img src="./img/bookMark.svg"/>
-                </button>
-            </div>
-            <p class="post__article">
-                우리는 시스템 아키텍처에 대한 일관성 있는 접근이 필요하며, 필요한
-                모든 측면은 이미 개별적으로 인식되고 있다고 생각합니다. 즉, 응답이
-                잘 되고, 탄력적이며 유연하고 메시지 기반으로 동작하는 시스템 입니다.
-                우리는 이것을 리액티브 시스템(Reactive Systems)라고 부릅니다.
-                리액티브 시스템으로 구축된 시스템은 보다 유연하고, 느슨한 결합을
-                갖고, 확장성 이 있습니다. 이로 인해 개발이 더 쉬워지고 변경 사항을
-                적용하기 쉬워집니다. 이 시스템은 장애 에 대해 더 강한 내성을 지니며,
-                비록 장애가 발생 하더라도, 재난이 일어나기 보다는 간결한 방식으로
-                해결합니다. 리액티브 시스템은 높은 응답성을 가지며 사용자 에게
-                효과적인 상호적 피드백을 제공합니다.
-            </p>
-        </div>
-        <ul class="comment">
-            <li class="comment__item">
-                <div class="comment__item__user">
-                    <img class="comment__item__user__img"/>
-                    <p class="comment__item__user__nickname">account</p>
-                </div>
-                <p class="comment__item__article">
-                    군인 또는 군무원이 아닌 국민은 대한민국의 영역안에서는 중대한
-                    군사상 기밀·초병·초소·유독음식물공급·포로·군용물에 관한 죄중
-                    법률이 정한 경우와 비상계엄이 선포된 경우를 제외하고는 군사법원의
-                    재판을 받지 아니한다.
-                </p>
-            </li>
-            <li class="comment__item">
-                <div class="comment__item__user">
-                    <img class="comment__item__user__img"/>
-                    <p class="comment__item__user__nickname">account</p>
-                </div>
-                <p class="comment__item__article">
-                    대통령의 임기연장 또는 중임변경을 위한 헌법개정은 그 헌법개정 제안
-                    당시의 대통령에 대하여는 효력이 없다. 민주평화통일자문회의의
-                    조직·직무범위 기타 필요한 사항은 법률로 정한다.
-                </p>
-            </li>
-            <li class="comment__item">
-                <div class="comment__item__user">
-                    <img class="comment__item__user__img"/>
-                    <p class="comment__item__user__nickname">account</p>
-                </div>
-                <p class="comment__item__article">
-                    민주평화통일자문회의의 조직·직무범위 기타 필요한 사항은 법률로
-                    정한다.
-                </p>
-            </li>
-            <li class="comment__item hidden">
-                <div class="comment__item__user">
-                    <img class="comment__item__user__img"/>
-                    <p class="comment__item__user__nickname">account</p>
-                </div>
-                <p class="comment__item__article">Comment 1</p>
-            </li>
-            <li class="comment__item hidden">
-                <div class="comment__item__user">
-                    <img class="comment__item__user__img"/>
-                    <p class="comment__item__user__nickname">account</p>
-                </div>
-                <p class="comment__item__article">Comment 2</p>
-            </li>
-            <li class="comment__item hidden">
-                <div class="comment__item__user">
-                    <img class="comment__item__user__img"/>
-                    <p class="comment__item__user__nickname">account</p>
-                </div>
-                <p class="comment__item__article">Comment 3</p>
-            </li>
-            <button id="show-all-btn" class="btn btn_ghost btn_size_m">
-                모든 댓글 보기(3개)
-            </button>
-        </ul>
+        </template>
+
+<!--        </div>-->
+<!--        <ul class="comment">-->
+<!--            <li class="comment__item">-->
+<!--                <div class="comment__item__user">-->
+<!--                    <img class="comment__item__user__img"/>-->
+<!--                    <p class="comment__item__user__nickname">account</p>-->
+<!--                </div>-->
+<!--                <p class="comment__item__article">-->
+<!--                    군인 또는 군무원이 아닌 국민은 대한민국의 영역안에서는 중대한-->
+<!--                    군사상 기밀·초병·초소·유독음식물공급·포로·군용물에 관한 죄중-->
+<!--                    법률이 정한 경우와 비상계엄이 선포된 경우를 제외하고는 군사법원의-->
+<!--                    재판을 받지 아니한다.-->
+<!--                </p>-->
+<!--            </li>-->
+<!--            <li class="comment__item">-->
+<!--                <div class="comment__item__user">-->
+<!--                    <img class="comment__item__user__img"/>-->
+<!--                    <p class="comment__item__user__nickname">account</p>-->
+<!--                </div>-->
+<!--                <p class="comment__item__article">-->
+<!--                    대통령의 임기연장 또는 중임변경을 위한 헌법개정은 그 헌법개정 제안-->
+<!--                    당시의 대통령에 대하여는 효력이 없다. 민주평화통일자문회의의-->
+<!--                    조직·직무범위 기타 필요한 사항은 법률로 정한다.-->
+<!--                </p>-->
+<!--            </li>-->
+<!--            <li class="comment__item">-->
+<!--                <div class="comment__item__user">-->
+<!--                    <img class="comment__item__user__img"/>-->
+<!--                    <p class="comment__item__user__nickname">account</p>-->
+<!--                </div>-->
+<!--                <p class="comment__item__article">-->
+<!--                    민주평화통일자문회의의 조직·직무범위 기타 필요한 사항은 법률로-->
+<!--                    정한다.-->
+<!--                </p>-->
+<!--            </li>-->
+<!--            <li class="comment__item hidden">-->
+<!--                <div class="comment__item__user">-->
+<!--                    <img class="comment__item__user__img"/>-->
+<!--                    <p class="comment__item__user__nickname">account</p>-->
+<!--                </div>-->
+<!--                <p class="comment__item__article">Comment 1</p>-->
+<!--            </li>-->
+<!--            <li class="comment__item hidden">-->
+<!--                <div class="comment__item__user">-->
+<!--                    <img class="comment__item__user__img"/>-->
+<!--                    <p class="comment__item__user__nickname">account</p>-->
+<!--                </div>-->
+<!--                <p class="comment__item__article">Comment 2</p>-->
+<!--            </li>-->
+<!--            <li class="comment__item hidden">-->
+<!--                <div class="comment__item__user">-->
+<!--                    <img class="comment__item__user__img"/>-->
+<!--                    <p class="comment__item__user__nickname">account</p>-->
+<!--                </div>-->
+<!--                <p class="comment__item__article">Comment 3</p>-->
+<!--            </li>-->
+<!--            <button id="show-all-btn" class="btn btn_ghost btn_size_m">-->
+<!--                모든 댓글 보기(3개)-->
+<!--            </button>-->
+<!--        </ul>-->
+
         <nav class="nav">
             <ul class="nav__menu">
                 <li class="nav__menu__item">
-                    <a class="nav__menu__item__btn" href="">
-                        <img
-                                class="nav__menu__item__img"
-                                src="./img/ci_chevron-left.svg"
-                        />
-                        이전 글
+                    <a id="prevArticleBtn" class="nav__menu__item__btn" href="#" style="display: none;">
+                        <img class="nav__menu__item__img" src="./img/ci_chevron-left.svg"/> 이전 글
                     </a>
                 </li>
                 <li class="nav__menu__item">
-                    <a class="btn btn_ghost btn_size_m">댓글 작성</a>
+                    <a id="commentBtn" class="btn btn_ghost btn_size_m" style="display: none;">댓글 작성</a>
                 </li>
                 <li class="nav__menu__item">
-                    <a class="nav__menu__item__btn" href="">
-                        다음 글
-                        <img
-                                class="nav__menu__item__img"
-                                src="./img/ci_chevron-right.svg"
-                        />
+                    <a id="nextArticleBtn" class="nav__menu__item__btn" href="#" style="display: none;"> 다음 글
+                        <img class="nav__menu__item__img" src="./img/ci_chevron-right.svg"/>
                     </a>
                 </li>
             </ul>
@@ -233,35 +221,84 @@
         }
 
         function displayArticleList(articles) {
-            const articleListElement = document.getElementById('articleList');
-            if (articles.length === 0) {
-                articleListElement.innerHTML = '';
-            } else {
-                const table = document.createElement('table');
-                table.className = 'article-table'
-                const thead = document.createElement('thead');
-                thead.innerHTML = `
-                    <tr>
-                        <th class="number-column">번호</th>
-                        <th class="title-column">제목</th>
-                    </tr>
-                `;
-                table.appendChild(thead);
+            const articleContainer = document.getElementById('articleContainer')
+            const prevBtn = document.getElementById('prevArticleBtn')
+            const nextBtn = document.getElementById('nextArticleBtn')
+            const commentBtn = document.getElementById('commentBtn')
 
-                // 테이블 본문 생성
-                const tbody = document.createElement('tbody');
-                articles.forEach((article, idx) => {
-                    const tr = document.createElement('tr');
-                    tr.innerHTML = `
-                        <td class="number-column">${idx+1}</td>
-                        <td class="title-column">${article.title}</td>
-                    `;
-                    tbody.appendChild(tr);
-                });
-                table.appendChild(tbody);
-                articleListElement.innerHTML = '';
-                articleListElement.appendChild(table);
+            if(articles.length == 0){
+                const noArticleMessage = document.createElement('p');
+                noArticleMessage.textContent = "작성된 글이 없습니다";
+                noArticleMessage.style.textAlign = 'center';
+                noArticleMessage.style.padding = '20px';
+                noArticleMessage.style.fontSize = '16px';
+                noArticleMessage.style.color = '#666';
+                articleContainer.appendChild(noArticleMessage);
+
+                prevBtn.style.display = 'none';
+                nextBtn.style.display = 'none';
+                commentBtn.style.display = 'none';
+                return;
             }
+
+            commentBtn.style.display = 'inline-block';
+
+            articles.forEach((article, index) => {
+                const articleElement = createArticleElement(article);
+                articleContainer.appendChild(articleElement);
+
+                if(index > 0){
+                    articleElement.style.display = 'none';
+                }
+            })
+
+            prevBtn.style.display = articles.length > 1 ? 'inline-block' : 'none';
+            nextBtn.style.display = articles.length > 1 ? 'inline-block' : 'none';
+
+            let currentIndex = 0;
+
+            prevBtn.onclick = function(e) {
+                e.preventDefault();
+                if (currentIndex > 0) {
+                    articleContainer.children[currentIndex].style.display = 'none';
+                    currentIndex--;
+                    articleContainer.children[currentIndex].style.display = 'block';
+                }
+                updateButtonVisibility();
+            };
+
+            nextBtn.onclick = function(e) {
+                e.preventDefault();
+                if (currentIndex < articles.length - 1) {
+                    articleContainer.children[currentIndex].style.display = 'none';
+                    currentIndex++;
+                    articleContainer.children[currentIndex].style.display = 'block';
+                }
+                updateButtonVisibility();
+            };
+
+            function updateButtonVisibility() {
+                prevBtn.style.display = currentIndex > 0 ? 'inline-block' : 'none';
+                nextBtn.style.display = currentIndex < articles.length - 1 ? 'inline-block' : 'none';
+            }
+        }
+
+        function createArticleElement(article) {
+            const template = document.getElementById('articleTemplate');
+            const articleElement = template.content.cloneNode(true);
+            const nickname = articleElement.querySelector('.post__account__nickname');
+            nickname.textContent = article.author || 'account';
+
+            const title = articleElement.querySelector('.post__title');
+            title.textContent = article.title;
+
+            const content = articleElement.querySelector('.post__article');
+            content.textContent = article.content;
+
+            // 필요한 경우 이미지 src 설정
+            // const img = articleElement.querySelector('.post__img');
+            // img.src = article.imageUrl || '';
+            return articleElement.firstElementChild;
         }
 
         checkLoginStatus(); // 초기 로그인 상태 확인
