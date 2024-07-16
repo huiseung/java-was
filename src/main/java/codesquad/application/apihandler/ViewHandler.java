@@ -20,6 +20,11 @@ public class ViewHandler {
         return StaticResourceHandler.handle("/index.html");
     }
 
+    @RequestMapping(method = HttpMethod.GET, path = "/main")
+    public HttpResponse mainPage(HttpRequest request){
+        return StaticResourceHandler.handle("/index.html");
+    }
+
     @RequestMapping(method = HttpMethod.GET, path = "/registration")
     public HttpResponse registration(HttpRequest request){
         return StaticResourceHandler.handle("/registration/index.html");
@@ -38,5 +43,17 @@ public class ViewHandler {
     @RequestMapping(method = HttpMethod.GET, path = "/user/list")
     public HttpResponse userList(HttpRequest request){
         return StaticResourceHandler.handle("/userList/index.html");
+    }
+
+
+    @RequestMapping(method = HttpMethod.GET, path = "/article")
+    public HttpResponse article(HttpRequest request){
+        return StaticResourceHandler.handle("/article/index.html");
+    }
+
+
+    @RequestMapping(method = HttpMethod.GET, path = "/write.html")
+    public HttpResponse articleHtml(HttpRequest request){
+        return StaticResourceHandler.handle("/article/index.html");
     }
 }
