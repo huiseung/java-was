@@ -23,7 +23,7 @@ public class ArticleHandler {
     private final ArticleDataHandler articleDb;
 
     public ArticleHandler(
-            @Specify("ArticleDataHandlerInMemory") ArticleDataHandler articleDb) {
+            @Specify("ArticleDataHandlerJdbc") ArticleDataHandler articleDb) {
         this.articleDb = articleDb;
     }
 
