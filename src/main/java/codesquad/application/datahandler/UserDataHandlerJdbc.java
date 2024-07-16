@@ -1,13 +1,30 @@
 package codesquad.application.datahandler;
 
+import codesquad.application.domain.User;
 import codesquad.webserver.annotation.DataHandler;
-import codesquad.webserver.annotation.RequestMapping;
-import codesquad.webserver.http.HttpMethod;
+
+import java.util.List;
+import java.util.Optional;
 
 @DataHandler("UserDataHandlerJdbc")
 public class UserDataHandlerJdbc implements UserDataHandler{
-    @RequestMapping(method = HttpMethod.GET, path = "/hello")
-    public String hello(){
-        return "hello";
+    @Override
+    public void insert(User user) {
+
+    }
+
+    @Override
+    public List<User> getAll() {
+        return List.of();
+    }
+
+    @Override
+    public boolean isExist(String username) {
+        return false;
+    }
+
+    @Override
+    public Optional<User> getByUsername(String username) {
+        return Optional.empty();
     }
 }
