@@ -8,6 +8,7 @@ import codesquad.webserver.annotation.Specify;
 import codesquad.webserver.http.HttpMethod;
 import codesquad.webserver.http.HttpRequest;
 import codesquad.webserver.http.HttpResponse;
+import codesquad.webserver.util.JsonStringConverter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -28,7 +29,11 @@ public class ArticleHandler {
         log.debug("article title:" + title + ", content:" + content);
         Article article = new Article(title, content);
         articleDb.insert(article);
-        log.debug("article: "+articleDb.getAll());
         return HttpResponse.redirect("/index");
+    }
+
+    @RequestMapping(method = HttpMethod.GET, path = "/api/articles")
+    public HttpResponse getAll(HttpRequest request) {
+        return HttpResponse.ok(JsonStringConverter.collectionToJsonString(articleDb.getAll()));
     }
 }

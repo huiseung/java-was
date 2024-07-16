@@ -151,77 +151,122 @@
                 </li>
             </ul>
         </nav>
-        <div >
+        <div>
             <a class="btn btn_contained btn_size_s" href="/article">글쓰기</a>
         </div>
+        <div id="articleList"></div>
     </div>
 </div>
 <script>
     document.addEventListener('DOMContentLoaded', function() {
-    const loginItem = document.getElementById('loginItem');
-    const registerItem = document.getElementById('registerItem');
-    const logoutItem = document.getElementById('logoutItem');
-    const userNickname = document.getElementById('userNickname');
-    const logoutBtn = document.getElementById('logoutBtn');
-    const userListItem = document.getElementById('userListItem');
+        const loginItem = document.getElementById('loginItem');
+        const registerItem = document.getElementById('registerItem');
+        const logoutItem = document.getElementById('logoutItem');
+        const userNickname = document.getElementById('userNickname');
+        const logoutBtn = document.getElementById('logoutBtn');
+        const userListItem = document.getElementById('userListItem');
 
-    function checkLoginStatus() {
-      fetch('/me', {
-        method: 'GET',
-        credentials: 'include'
-      })
-      .then(response => response.text())
-      .then(result => {
-        if (result === "NO_USER" || result == "Not Found") {
-          // 로그인하지 않은 상태
-          loginItem.style.display = 'inline';
-          registerItem.style.display = 'inline';
-          logoutItem.style.display = 'none';
-          userNickname.style.display = 'none';
-          userListItem.style.display = 'none';
-        } else {
-          // 로그인한 상태
-          loginItem.style.display = 'none';
-          registerItem.style.display = 'none';
-          logoutItem.style.display = 'inline';
-          userNickname.textContent = `${result} 님`;
-          userNickname.style.display = 'inline';
-          userListItem.style.display = 'inline';
+        function checkLoginStatus() {
+          fetch('/me', {
+            method: 'GET',
+            credentials: 'include'
+          })
+          .then(response => response.text())
+          .then(result => {
+            if (result === "NO_USER" || result == "Not Found") {
+              // 로그인하지 않은 상태
+              loginItem.style.display = 'inline';
+              registerItem.style.display = 'inline';
+              logoutItem.style.display = 'none';
+              userNickname.style.display = 'none';
+              userListItem.style.display = 'none';
+            } else {
+              // 로그인한 상태
+              loginItem.style.display = 'none';
+              registerItem.style.display = 'none';
+              logoutItem.style.display = 'inline';
+              userNickname.textContent = `${result} 님`;
+              userNickname.style.display = 'inline';
+              userListItem.style.display = 'inline';
+            }
+          })
+          .catch(error => {
+            console.error('Error checking login status:', error);
+            // 에러 발생 시 로그인하지 않은 상태로 처리
+            loginItem.style.display = 'inline';
+            registerItem.style.display = 'inline';
+            logoutItem.style.display = 'none';
+            userNickname.style.display = 'none';
+            userListItem.style.display = 'none';
+          });
         }
-      })
-      .catch(error => {
-        console.error('Error checking login status:', error);
-        // 에러 발생 시 로그인하지 않은 상태로 처리
-        loginItem.style.display = 'inline';
-        registerItem.style.display = 'inline';
-        logoutItem.style.display = 'none';
-        userNickname.style.display = 'none';
-        userListItem.style.display = 'none';
-      });
-    }
 
-    logoutBtn.addEventListener('click', function(e) {
-      e.preventDefault();
+        logoutBtn.addEventListener('click', function(e) {
+          e.preventDefault();
+          fetch('/logout', {
+            method: 'POST',
+            credentials: 'include'
+          })
+          .then(response => {
+            if (response.ok) {
+              console.log('로그아웃 성공');
+              checkLoginStatus(); // 로그아웃 후 상태 다시 확인
+            } else {
+              console.error('로그아웃 실패');
+            }
+          })
+          .catch(error => {
+            console.error('로그아웃 요청 중 오류 발생:', error);
+          });
+        });
 
-      fetch('/logout', {
-        method: 'POST',
-        credentials: 'include'
-      })
-      .then(response => {
-        if (response.ok) {
-          console.log('로그아웃 성공');
-          checkLoginStatus(); // 로그아웃 후 상태 다시 확인
-        } else {
-          console.error('로그아웃 실패');
+        function fetchArticleList() {
+            fetch('/api/articles')
+                .then(response => response.json())
+                .then(articles => {
+                    console.log(articles);
+                    displayArticleList(articles);
+                })
+                .catch(error => {
+                    console.error('글 목록 가져오기 중 오류 발생:', error);
+                });
         }
-      })
-      .catch(error => {
-        console.error('로그아웃 요청 중 오류 발생:', error);
-      });
+
+        function displayArticleList(articles) {
+            const articleListElement = document.getElementById('articleList');
+            if (articles.length === 0) {
+                articleListElement.innerHTML = '';
+            } else {
+                const table = document.createElement('table');
+                table.className = 'article-table'
+                const thead = document.createElement('thead');
+                thead.innerHTML = `
+                    <tr>
+                        <th class="number-column">번호</th>
+                        <th class="title-column">제목</th>
+                    </tr>
+                `;
+                table.appendChild(thead);
+
+                // 테이블 본문 생성
+                const tbody = document.createElement('tbody');
+                articles.forEach((article, idx) => {
+                    const tr = document.createElement('tr');
+                    tr.innerHTML = `
+                        <td class="number-column">${idx+1}</td>
+                        <td class="title-column">${article.title}</td>
+                    `;
+                    tbody.appendChild(tr);
+                });
+                table.appendChild(tbody);
+                articleListElement.innerHTML = '';
+                articleListElement.appendChild(table);
+            }
+        }
+
+        checkLoginStatus(); // 초기 로그인 상태 확인
+        fetchArticleList();
     });
-
-    checkLoginStatus(); // 초기 로그인 상태 확인
-});
 </script>
 </body>
 </html>

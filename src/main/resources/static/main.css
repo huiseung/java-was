@@ -155,3 +155,38 @@
 #userNickname {
     margin-left: 10px;
 }
+
+
+#articleList{
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+  gap: 16px;
+}
+.article-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.article-table th,
+.article-table td {
+  padding: 8px;
+  text-align: left;
+  border-bottom: 1px solid #ebebeb;
+}
+
+.article-table .number-column {
+  width: 10%;
+}
+
+.article-table .title-column {
+  width: calc(100% - 10%);
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+.article-table .title-column:hover {
+  background-color: #f0f0f0;
+}
+
+
