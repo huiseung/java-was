@@ -226,6 +226,8 @@
             const nextBtn = document.getElementById('nextArticleBtn')
             const commentBtn = document.getElementById('commentBtn')
 
+            articleContainer.innerHTML = '';
+
             if(articles.length == 0){
                 const noArticleMessage = document.createElement('p');
                 noArticleMessage.textContent = "작성된 글이 없습니다";
@@ -252,10 +254,8 @@
                 }
             })
 
-            prevBtn.style.display = articles.length > 1 ? 'inline-block' : 'none';
-            nextBtn.style.display = articles.length > 1 ? 'inline-block' : 'none';
-
             let currentIndex = 0;
+            updateButtonVisibility();
 
             prevBtn.onclick = function(e) {
                 e.preventDefault();
