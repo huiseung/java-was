@@ -23,6 +23,9 @@ public class DynamicResourceHandlerInitializer {
 
     public static void init(DynamicResourceHandler dynamicResourceHandler, List<Class<?>> classes, Map<String, Object> databaseInstances) {
         log.info("classes length: {}", classes.size());
+        log.info("classes: "+classes);
+        log.info("databases: "+databaseInstances);
+
         for (Class<?> clazz : classes) {
             try {
                 if (clazz.isAnnotationPresent(ApiHandler.class)) {
@@ -44,10 +47,11 @@ public class DynamicResourceHandlerInitializer {
     }
 
     private static Object createHandlerInstance(Class<?> handlerClass, Map<String, Object> databaseInstances) throws Exception {
+        log.debug("create: "+handlerClass.getName());
         Constructor<?>[] constructors = handlerClass.getDeclaredConstructors();
         for (Constructor<?> constructor : constructors) {
             Parameter[] parameters = constructor.getParameters();
-            if (parameters.length > 0 && UserDataHandler.class.isAssignableFrom(parameters[0].getType())) {
+            if (parameters.length > 0) {
                 Specify specify = parameters[0].getAnnotation(Specify.class);
                 if (specify != null) {
                     Object databaseInstance = databaseInstances.get(specify.value());
