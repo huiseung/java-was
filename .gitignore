@@ -1,5 +1,6 @@
 db.mv.db
 db.trace.db
+./upload/*
 
 .gradle
 build/
