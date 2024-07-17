@@ -8,12 +8,15 @@ import codesquad.application.session.SessionManager;
 import codesquad.webserver.annotation.ApiHandler;
 import codesquad.webserver.annotation.RequestMapping;
 import codesquad.webserver.annotation.Specify;
-import codesquad.webserver.http.HttpBody;
 import codesquad.webserver.http.HttpMethod;
 import codesquad.webserver.http.HttpRequest;
 import codesquad.webserver.http.HttpResponse;
+import codesquad.webserver.util.FileWriter;
 import codesquad.webserver.util.JsonStringConverter;
+
+import java.io.File;
 import java.util.Map;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -39,8 +42,15 @@ public class ArticleHandler {
         String sid = CookieExtractor.getSid(request);
         User sessionUser = SessionManager.getInstance().getUser(sid);
 
-        Article article = new Article(title, content, sessionUser.getNickname());
-        log.debug("[write] "+article.toString());
+        String fileName = "";
+        if(body.containsKey("filename")){
+            byte[] fileBytes = (byte[]) body.get("image");
+            fileName = (String) body.get("filename");
+        }
+        // FileWriter.saveFile(fileBytes, "/upload/"+fileName);
+
+        Article article = new Article(title, content, sessionUser.getNickname(), "/upload/" + fileName);
+        log.debug("[write] " + article.toString());
         articleDb.insert(article);
         return HttpResponse.redirect("/index");
     }
@@ -48,7 +58,7 @@ public class ArticleHandler {
     @RequestMapping(method = HttpMethod.GET, path = "/api/articles")
     public HttpResponse getAll(HttpRequest request) {
         List<Article> articles = articleDb.getAll();
-        log.debug("[/api/articles] "+articles);
+        log.debug("[/api/articles] " + articles);
         return HttpResponse.ok(JsonStringConverter.collectionToJsonString(articles));
     }
 }
