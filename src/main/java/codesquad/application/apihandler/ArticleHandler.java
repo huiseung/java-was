@@ -46,10 +46,9 @@ public class ArticleHandler {
         if(body.containsKey("filename")){
             byte[] fileBytes = (byte[]) body.get("image");
             fileName = (String) body.get("filename");
+            FileWriter.saveFile(fileBytes, fileName);
         }
-        // FileWriter.saveFile(fileBytes, "/upload/"+fileName);
-
-        Article article = new Article(title, content, sessionUser.getNickname(), "/upload/" + fileName);
+        Article article = new Article(title, content, sessionUser.getNickname(), "./upload/" + fileName);
         log.debug("[write] " + article.toString());
         articleDb.insert(article);
         return HttpResponse.redirect("/index");

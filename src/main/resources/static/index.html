@@ -38,7 +38,7 @@
                     <p class="post__account__nickname"></p>
                 </div>
                 <p class="post__title"></p>
-                <img class="post__img"/>
+                <img class="post__img" src=""/>
                 <div class="post__menu">
                     <ul class="post__menu__personal">
                         <li>
@@ -242,7 +242,7 @@
 
 
             const img = articleElement.querySelector('.post__img');
-            img.src = `.${article.imagePath}` || '';
+            img.src = `${article.imagePath}` || '';
             return articleElement.firstElementChild;
         }
 
