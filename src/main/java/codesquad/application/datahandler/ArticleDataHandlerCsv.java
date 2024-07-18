@@ -56,7 +56,7 @@ public class ArticleDataHandlerCsv implements ArticleDataHandler{
     public void insert(Article article) {
         String key = UUID.randomUUID().toString();
         LocalDateTime now = LocalDateTime.now();
-        Article insertArticle = new Article(key, "a", "b", "c", article.getImagePath(), now);
+        Article insertArticle = new Article(key, article.getTitle(), article.getContent(), article.getAuthor(), article.getImagePath(), now);
         String sql = "INSERT INTO articles (id, title, content, author, image_path, created_dt) VALUES (?, ?, ?, ?, ?, ?)";
         try (Connection con = CsvConnectionManager.getConnection(); PreparedStatement pstmt = con.prepareStatement(sql)) {
             pstmt.setString(1, insertArticle.getId());
@@ -76,7 +76,8 @@ public class ArticleDataHandlerCsv implements ArticleDataHandler{
     public List<Article> getAll() {
         List<Article> articles = new ArrayList<>();
         try(Connection con = CsvConnectionManager.getConnection(); Statement stmt = con.createStatement()){
-            String query = "SELECT * FROM ARTICLES";            ResultSet rs = stmt.executeQuery(query);
+            String query = "SELECT * FROM ARTICLES";
+            ResultSet rs = stmt.executeQuery(query);
             while(rs.next()){
                 String id = rs.getString("ID");
                 String title = rs.getString("TITLE");
