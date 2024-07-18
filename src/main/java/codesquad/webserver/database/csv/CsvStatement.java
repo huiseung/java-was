@@ -80,7 +80,7 @@ public class CsvStatement implements Statement {
         try(BufferedReader br = new BufferedReader(new FileReader(connection.getCsvFilePath() + "/" + filaName + ".csv"))){
             String line;
             while((line = br.readLine()) != null){
-                data.add(line.split(","));
+                data.add(parseCsvLine(line));
             }
         } catch (FileNotFoundException e) {
             throw new RuntimeException(e);
@@ -92,12 +92,24 @@ public class CsvStatement implements Statement {
     private void saveCsvData(String filename) throws SQLException {
         try (BufferedWriter bw = new BufferedWriter(new FileWriter(connection.getCsvFilePath() + "/" + filename + ".csv"))) {
             for (String[] row : data) {
-                bw.write(String.join(",", row));
+                bw.write(String.join(",", Arrays.stream(row).map(this::escapeNewlines).toArray(String[]::new)));
                 bw.newLine();
             }
         } catch (IOException e) {
             throw new SQLException("Error writing CSV file", e);
         }
+    }
+
+    private String[] parseCsvLine(String line) {
+        String[] fields = line.split(",");
+        for (int i = 0; i < fields.length; i++) {
+            fields[i] = unescapeNewlines(fields[i]);
+        }
+        return fields;
+    }
+
+    private String unescapeNewlines(String value) {
+        return value.replace("\\n", "\n").replace("\\r", "\r");
     }
 
     private int[] getColumnIndices(String[] headers, String[] selectedColumns) throws SQLException {
@@ -117,9 +129,9 @@ public class CsvStatement implements Statement {
 
     private int handleInsert(String sql) throws SQLException {
         // INSERT INTO table VALUES (val1, val2, ...)
-        String regex = "insert\\s+into\\s+(\\w+)\\s*\\(([^)]*)\\)\\s*values\\s*\\(([^)]*)\\)";
-        Pattern pattern = Pattern.compile(regex);
-        Matcher matcher = pattern.matcher(sql.toLowerCase());
+        String regex = "insert\\s+into\\s+(\\w+)\\s*\\(([^)]*)\\)\\s*values\\s*\\((.+)\\)";
+        Pattern pattern = Pattern.compile(regex, Pattern.CASE_INSENSITIVE | Pattern.DOTALL);
+        Matcher matcher = pattern.matcher(sql);
 
         if (!matcher.find()) {
             throw new SQLException("Invalid INSERT statement");
@@ -127,14 +139,19 @@ public class CsvStatement implements Statement {
 
         String tableName = matcher.group(1);
         String[] columns = matcher.group(2).split(",");
-        String[] values = matcher.group(3).split(",");
+        String valuesGroup = matcher.group(3);
+
+        // 값 파싱 (쌍따옴표 내의 쉼표와 개행은 무시)
+        List<String> values = parseValues(valuesGroup);
 
         loadCsvData(tableName);
 
-        for (int i = 0; i < values.length; i++) {
-            values[i] = values[i].trim().replaceAll("^'|'$", ""); // 작은따옴표 제거
+        String[] newRow = new String[columns.length];
+        for (int i = 0; i < columns.length; i++) {
+            newRow[i] = escapeNewlines(values.get(i));
         }
-        this.data.add(values);
+
+        this.data.add(newRow);
         saveCsvData(tableName);
         log.info("insert: save csv");
         return 1;
@@ -204,6 +221,13 @@ public class CsvStatement implements Statement {
         return deletedRows;
     }
 
+    private String escapeNewlines(String value) {
+        if (value == null) {
+            return "";
+        }
+        return value.replace("\n", "\\n").replace("\r", "\\r");
+    }
+
     private boolean evaluateWhereClause(String[] headers, String[] row, String whereClause) {
         //  column = value
         String[] parts = whereClause.split("=");
@@ -231,6 +255,25 @@ public class CsvStatement implements Statement {
         }
         return -1;
     }
+
+    private List<String> parseValues(String valuesGroup) {
+        List<String> values = new ArrayList<>();
+        StringBuilder sb = new StringBuilder();
+        boolean inQuotes = false;
+        for (char c : valuesGroup.toCharArray()) {
+            if (c == '"') {
+                inQuotes = !inQuotes;
+            } else if (c == ',' && !inQuotes) {
+                values.add(sb.toString().trim());
+                sb.setLength(0);
+            } else {
+                sb.append(c);
+            }
+        }
+        values.add(sb.toString().trim());
+        return values;
+    }
+
 
 
     @Override

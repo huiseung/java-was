@@ -54,7 +54,8 @@ public class ArticleCsvDataTest {
     private void insert(){
         String key = UUID.randomUUID().toString();
         LocalDateTime now = LocalDateTime.now();
-        Article insertArticle = new Article(key, "a", "b", "c", "./upload/81a52b74-1848-408d-a9a5-15b2d197c16c.png", now);
+        String content = "안녕하세요\n무튼첫글입니다.";
+        Article insertArticle = new Article(key, "a", content, "c", "./upload/81a52b74-1848-408d-a9a5-15b2d197c16c.png", now);
         String sql = "INSERT INTO articles (id, title, content, author, image_path, created_dt) VALUES (?, ?, ?, ?, ?, ?)";
         try (Connection con = CsvConnectionManager.getConnection(); PreparedStatement pstmt = con.prepareStatement(sql)) {
             pstmt.setString(1, insertArticle.getId());
