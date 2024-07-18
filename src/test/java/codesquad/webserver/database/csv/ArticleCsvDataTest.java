@@ -3,7 +3,6 @@ package codesquad.webserver.database.csv;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import codesquad.application.domain.Article;
-import codesquad.application.domain.User;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;

@@ -1,6 +1,5 @@
 package codesquad.webserver.database.csv;
 
-import java.io.File;
 import java.sql.*;
 import java.util.Map;
 import java.util.Properties;

@@ -1,7 +1,6 @@
 package codesquad.webserver.http;
 
 import java.io.*;
-import java.nio.charset.StandardCharsets;
 
 import java.util.Arrays;
 import java.util.HashMap;
@@ -15,7 +14,6 @@ public class HttpRequestParser {
     private static final Logger log = LoggerFactory.getLogger(HttpRequestParser.class);
 
     public static HttpRequest parse(InputStream inputStream) {
-        // BufferedReader br = new BufferedReader(new InputStreamReader(inputStream, StandardCharsets.UTF_8));
         HttpRequestStartLine startLine = new HttpRequestStartLine(readStartLine(inputStream));
         log.info("[parse] start line " + startLine);
         HttpHeader header = readHeader(inputStream);

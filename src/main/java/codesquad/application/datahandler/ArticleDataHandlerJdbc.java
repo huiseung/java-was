@@ -1,7 +1,6 @@
 package codesquad.application.datahandler;
 
 import codesquad.application.domain.Article;
-import codesquad.application.domain.User;
 import codesquad.webserver.annotation.DataHandler;
 import codesquad.webserver.database.DatabaseConnectionManager;
 import org.slf4j.Logger;
