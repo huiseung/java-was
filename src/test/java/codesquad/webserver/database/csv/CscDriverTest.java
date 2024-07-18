@@ -1,7 +1,6 @@
 package codesquad.webserver.database.csv;
 
 import codesquad.application.domain.User;
-import codesquad.webserver.database.DatabaseConnectionManager;
 import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
