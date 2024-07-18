@@ -110,25 +110,34 @@ public class HttpRequestParser {
             String contentDisposition = new String(Arrays.copyOfRange(bodyBytes, start, newLinePos));
             log.debug("[readMultipartFormData] content-disposition: " + contentDisposition);
             if (contentDisposition.contains("filename=")) {
-                // 파일 처리
-                String name = getFieldName(contentDisposition.split(";")[1]);
-                String filename = getFileName(contentDisposition.split(";")[2]);
-                int contentTypeNewLinePos = indexOf(bodyBytes, newLine, newLinePos + newLine.length); // content-type \r\n 첫 위치
-                String partContentType = new String(Arrays.copyOfRange(bodyBytes, newLinePos + newLine.length, contentTypeNewLinePos));
-                byte[] fileBytes = Arrays.copyOfRange(bodyBytes, contentTypeNewLinePos + newLine.length * 2, delimiterPos - newLine.length);
-                String changeFilename =  UUID.randomUUID().toString() + filename.substring(filename.lastIndexOf("."));
-                log.debug("[readMultipartFormData] filename: " + filename + ", changeFileName: " + changeFilename + ", part-content-type: " + partContentType + ", file size: " + fileBytes.length + "byte");
-                formData.put(name, fileBytes);
-                formData.put("filename", changeFilename);
+                fileDataParse(bodyBytes, contentDisposition, newLine, newLinePos, delimiterPos, formData);
             } else {
-                // 문자열 처리
-                String name = getFieldName(contentDisposition.split(";")[1]);
-                String data = new String(Arrays.copyOfRange(bodyBytes, newLinePos + newLine.length * 2, delimiterPos - newLine.length));
-                log.debug("[readMultipartFormData] name: " + name + ", data: " + data);
-                formData.put(name, data);
+                stringDataParse(bodyBytes, contentDisposition, newLinePos, newLine, delimiterPos, formData);
             }
         }
         return new HttpBody(formData);
+    }
+
+    private static void stringDataParse(byte[] bodyBytes, String contentDisposition, int newLinePos, byte[] newLine,
+                                  int delimiterPos, Map<String, Object> formData) {
+        String name = getFieldName(contentDisposition.split(";")[1]);
+        String data = new String(Arrays.copyOfRange(bodyBytes, newLinePos + newLine.length * 2, delimiterPos - newLine.length));
+        log.debug("[readMultipartFormData] name: " + name + ", data: " + data);
+        formData.put(name, data);
+    }
+
+    private static void fileDataParse(byte[] bodyBytes, String contentDisposition, byte[] newLine, int newLinePos,
+                                  int delimiterPos, Map<String, Object> formData) {
+        String name = getFieldName(contentDisposition.split(";")[1]);
+        String filename = getFileName(contentDisposition.split(";")[2]);
+        int contentTypeNewLinePos = indexOf(bodyBytes, newLine, newLinePos + newLine.length); // content-type \r\n 첫 위치
+        String partContentType = new String(Arrays.copyOfRange(bodyBytes, newLinePos + newLine.length, contentTypeNewLinePos));
+        byte[] fileBytes = Arrays.copyOfRange(
+                bodyBytes, contentTypeNewLinePos + newLine.length * 2, delimiterPos - newLine.length);
+        String changeFilename =  UUID.randomUUID().toString() + filename.substring(filename.lastIndexOf("."));
+        log.debug("[readMultipartFormData] filename: " + filename + ", changeFileName: " + changeFilename + ", part-content-type: " + partContentType + ", file size: " + fileBytes.length + "byte");
+        formData.put(name, fileBytes);
+        formData.put("filename", changeFilename);
     }
 
     private static int indexOf(byte[] origin, byte[] target, int start) {
