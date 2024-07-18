@@ -14,7 +14,7 @@ import java.util.Map;
 
 public class CsvResultSet implements ResultSet {
     private List<String[]> data;
-    private int currentRow = -1;
+    private int currentRow = 0;
     private String[] columnNames;
     private final SimpleDateFormat timestampFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS");
 
