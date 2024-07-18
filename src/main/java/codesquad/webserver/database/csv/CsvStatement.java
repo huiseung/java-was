@@ -22,29 +22,43 @@ public class CsvStatement implements Statement {
 
     @Override
     public ResultSet executeQuery(String sql) throws SQLException {
+        sql = sql.trim().toLowerCase();
         if(!sql.toLowerCase().startsWith("select")){
             throw new SQLException("");
         }
-        String[] parts = sql.split("\\s+");
-        if (parts.length < 4) {
-            throw new SQLException("Invalid SELECT query");
-        }
-        String tableName = parts[3];
-        loadCsvData(tableName);
+        Pattern pattern = Pattern.compile("select\\s+(.+)\\s+from\\s+(\\w+)(?:\\s+where\\s+(.+))?");
+        Matcher matcher = pattern.matcher(sql);
 
-        String whereClause = null;
-        for (int i = 0; i < parts.length - 1; i++) {
-            if (parts[i].equals("where")) {
-                whereClause = String.join(" ", Arrays.copyOfRange(parts, i + 1, parts.length));
-                break;
+        if (!matcher.find()) {
+            throw new SQLException("Invalid SELECT statement");
+        }
+
+        String columns = matcher.group(1);
+        String tableName = matcher.group(2);
+        String whereClause = matcher.group(3);
+
+        loadCsvData(tableName);
+        List<String[]> resultData = new ArrayList<>();
+
+        // 컬럼 선택
+        String[] selectedColumns = columns.equals("*") ? data.get(0) : columns.split(",");
+        int[] columnIndices = getColumnIndices(data.get(0), selectedColumns);
+
+        // 헤더 추가
+        resultData.add(selectedColumns);
+
+        // 데이터 필터링 및 선택
+        for (int i = 1; i < data.size(); i++) {
+            if (whereClause == null || evaluateWhereClause(data.get(0), data.get(i), whereClause)) {
+                String[] row = new String[columnIndices.length];
+                for (int j = 0; j < columnIndices.length; j++) {
+                    row[j] = data.get(i)[columnIndices[j]];
+                }
+                resultData.add(row);
             }
         }
 
-        if (whereClause != null) {
-            filterData(whereClause);
-        }
-
-        return new CsvResultSet(data);
+        return new CsvResultSet(resultData);
     }
 
     @Override
@@ -86,40 +100,19 @@ public class CsvStatement implements Statement {
         }
     }
 
-
-    private void filterData(String whereClause) {
-        // 매우 기본적인 WHERE 절 처리 (예: "column = value")
-        String[] whereParts = whereClause.split("=");
-        if (whereParts.length != 2) {
-            // 복잡한 조건은 무시하고 모든 데이터 반환
-            return;
-        }
-
-        String columnName = whereParts[0].trim();
-        String value = whereParts[1].trim().replaceAll("'", ""); // 작은따옴표 제거
-
-        int columnIndex = -1;
-        for (int i = 0; i < data.get(0).length; i++) {
-            if (data.get(0)[i].equalsIgnoreCase(columnName)) {
-                columnIndex = i;
-                break;
+    private int[] getColumnIndices(String[] headers, String[] selectedColumns) throws SQLException {
+        int[] indices = new int[selectedColumns.length];
+        for (int i = 0; i < selectedColumns.length; i++) {
+            String columnName = selectedColumns[i].trim();
+            if (columnName.contains(".")) {
+                columnName = columnName.substring(columnName.indexOf(".") + 1);
+            }
+            indices[i] = getColumnIndex(headers, columnName);
+            if (indices[i] == -1) {
+                throw new SQLException("Column not found: " + selectedColumns[i]);
             }
         }
-
-        if (columnIndex == -1) {
-            return;
-        }
-
-        List<String[]> filteredData = new ArrayList<>();
-        filteredData.add(data.get(0)); // 헤더 추가
-
-        for (int i = 1; i < data.size(); i++) {
-            if (data.get(i)[columnIndex].equals(value)) {
-                filteredData.add(data.get(i));
-            }
-        }
-
-        this.data =  filteredData;
+        return indices;
     }
 
     private int handleInsert(String sql) throws SQLException {
@@ -212,15 +205,22 @@ public class CsvStatement implements Statement {
     }
 
     private boolean evaluateWhereClause(String[] headers, String[] row, String whereClause) {
-        // 매우 기본적인 WHERE 절 평가 (예: column = value)
+        //  column = value
         String[] parts = whereClause.split("=");
         if (parts.length != 2) return false;
 
         String column = parts[0].trim();
-        String value = parts[1].trim().replaceAll("^'|'$", "");
+        String value = parts[1].trim();
+
+        if (column.contains(".")) {
+            column = column.substring(column.indexOf(".") + 1);
+        }
+
+        // 따옴표 제거 (있는 경우)
+        value = value.replaceAll("^['\"]|['\"]$", "");
 
         int columnIndex = getColumnIndex(headers, column);
-        return row[columnIndex].equals(value);
+        return columnIndex != -1 && row[columnIndex].equalsIgnoreCase(value);
     }
 
     private int getColumnIndex(String[] headers, String columnName) {
