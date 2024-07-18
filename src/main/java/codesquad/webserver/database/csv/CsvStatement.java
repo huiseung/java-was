@@ -5,10 +5,9 @@ import org.slf4j.LoggerFactory;
 
 import java.io.*;
 import java.sql.*;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Iterator;
-import java.util.List;
+import java.util.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class CsvStatement implements Statement {
     private CsvConnection connection;
@@ -26,13 +25,30 @@ public class CsvStatement implements Statement {
         if(!sql.toLowerCase().startsWith("select")){
             throw new SQLException("");
         }
-        loadCsvData();
+        String[] parts = sql.split("\\s+");
+        if (parts.length < 4) {
+            throw new SQLException("Invalid SELECT query");
+        }
+        String tableName = parts[3];
+        loadCsvData(tableName);
+
+        String whereClause = null;
+        for (int i = 0; i < parts.length - 1; i++) {
+            if (parts[i].equals("where")) {
+                whereClause = String.join(" ", Arrays.copyOfRange(parts, i + 1, parts.length));
+                break;
+            }
+        }
+
+        if (whereClause != null) {
+            filterData(whereClause);
+        }
+
         return new CsvResultSet(data);
     }
 
     @Override
     public int executeUpdate(String sql) throws SQLException {
-        loadCsvData();
         String lowerSql = sql.toLowerCase();
         if(lowerSql.startsWith("insert")){
             return handleInsert(sql);
@@ -45,9 +61,9 @@ public class CsvStatement implements Statement {
         }
     }
 
-    private void loadCsvData() throws SQLException{
+    private void loadCsvData(String filaName) throws SQLException{
         data = new ArrayList<>();
-        try(BufferedReader br = new BufferedReader(new FileReader(connection.getCsvFilePath()))){
+        try(BufferedReader br = new BufferedReader(new FileReader(connection.getCsvFilePath() + "/" + filaName + ".csv"))){
             String line;
             while((line = br.readLine()) != null){
                 data.add(line.split(","));
@@ -59,8 +75,8 @@ public class CsvStatement implements Statement {
         }
     }
 
-    private void saveCsvData() throws SQLException {
-        try (BufferedWriter bw = new BufferedWriter(new FileWriter(connection.getCsvFilePath()))) {
+    private void saveCsvData(String filename) throws SQLException {
+        try (BufferedWriter bw = new BufferedWriter(new FileWriter(connection.getCsvFilePath() + "/" + filename + ".csv"))) {
             for (String[] row : data) {
                 bw.write(String.join(",", row));
                 bw.newLine();
@@ -70,73 +86,150 @@ public class CsvStatement implements Statement {
         }
     }
 
+
+    private void filterData(String whereClause) {
+        // 매우 기본적인 WHERE 절 처리 (예: "column = value")
+        String[] whereParts = whereClause.split("=");
+        if (whereParts.length != 2) {
+            // 복잡한 조건은 무시하고 모든 데이터 반환
+            return;
+        }
+
+        String columnName = whereParts[0].trim();
+        String value = whereParts[1].trim().replaceAll("'", ""); // 작은따옴표 제거
+
+        int columnIndex = -1;
+        for (int i = 0; i < data.get(0).length; i++) {
+            if (data.get(0)[i].equalsIgnoreCase(columnName)) {
+                columnIndex = i;
+                break;
+            }
+        }
+
+        if (columnIndex == -1) {
+            return;
+        }
+
+        List<String[]> filteredData = new ArrayList<>();
+        filteredData.add(data.get(0)); // 헤더 추가
+
+        for (int i = 1; i < data.size(); i++) {
+            if (data.get(i)[columnIndex].equals(value)) {
+                filteredData.add(data.get(i));
+            }
+        }
+
+        this.data =  filteredData;
+    }
+
     private int handleInsert(String sql) throws SQLException {
         // INSERT INTO table VALUES (val1, val2, ...)
-        String[] parts = sql.split("VALUES");
-        if (parts.length != 2) throw new SQLException("Invalid INSERT statement");
+        String regex = "insert\\s+into\\s+(\\w+)\\s*\\(([^)]*)\\)\\s*values\\s*\\(([^)]*)\\)";
+        Pattern pattern = Pattern.compile(regex);
+        Matcher matcher = pattern.matcher(sql.toLowerCase());
 
-        String values = parts[1].trim().replaceAll("[()]", "");
-        String[] newRow = values.split(",");
-        for (int i = 0; i < newRow.length; i++) {
-            newRow[i] = newRow[i].trim();
+        if (!matcher.find()) {
+            throw new SQLException("Invalid INSERT statement");
         }
-        data.add(newRow);
-        saveCsvData();
+
+        String tableName = matcher.group(1);
+        String[] columns = matcher.group(2).split(",");
+        String[] values = matcher.group(3).split(",");
+
+        loadCsvData(tableName);
+
+        for (int i = 0; i < values.length; i++) {
+            values[i] = values[i].trim().replaceAll("^'|'$", ""); // 작은따옴표 제거
+        }
+        this.data.add(values);
+        saveCsvData(tableName);
         log.info("insert: save csv");
         return 1;
     }
 
     private int handleUpdate(String sql) throws SQLException {
         // UPDATE table SET col1 = val1 WHERE col2 = val2
-        String[] parts = sql.split("SET|WHERE");
-        if (parts.length != 3) throw new SQLException("Invalid UPDATE statement");
+        Pattern pattern = Pattern.compile("update\\s+(\\w+)\\s+set\\s+(.+)\\s+where\\s+(.+)");
+        Matcher matcher = pattern.matcher(sql);
 
-        String[] setParts = parts[1].trim().split("=");
-        String updateColumn = setParts[0].trim();
-        String updateValue = setParts[1].trim();
+        if (!matcher.find()) {
+            throw new SQLException("Invalid UPDATE statement");
+        }
 
-        String[] whereParts = parts[2].trim().split("=");
-        String whereColumn = whereParts[0].trim();
-        String whereValue = whereParts[1].trim();
+        String tableName = matcher.group(1);
+        String[] setClause = matcher.group(2).split(",");
+        String whereClause = matcher.group(3);
+        loadCsvData(tableName);
 
-        int updateCount = 0;
-        int updateColumnIndex = Arrays.asList(data.get(0)).indexOf(updateColumn);
-        int whereColumnIndex = Arrays.asList(data.get(0)).indexOf(whereColumn);
+        int updatedRows = 0;
+
+        Map<String, String> updates = new HashMap<>();
+        for (String set : setClause) {
+            String[] parts = set.trim().split("=");
+            updates.put(parts[0].trim(), parts[1].trim().replaceAll("^'|'$", ""));
+        }
 
         for (int i = 1; i < data.size(); i++) {
-            if (data.get(i)[whereColumnIndex].equals(whereValue)) {
-                data.get(i)[updateColumnIndex] = updateValue;
-                updateCount++;
+            if (evaluateWhereClause(data.get(0), data.get(i), whereClause)) {
+                for (Map.Entry<String, String> entry : updates.entrySet()) {
+                    int columnIndex = getColumnIndex(data.get(0), entry.getKey());
+                    data.get(i)[columnIndex] = entry.getValue();
+                }
+                updatedRows++;
             }
         }
 
-        saveCsvData();
-        return updateCount;
+        saveCsvData(tableName);
+        return updatedRows;
     }
 
     private int handleDelete(String sql) throws SQLException {
         // DELETE FROM table WHERE col = val
-        String[] parts = sql.split("WHERE");
-        if (parts.length != 2) throw new SQLException("Invalid DELETE statement");
+        Pattern pattern = Pattern.compile("delete\\s+from\\s+(\\w+)\\s+where\\s+(.+)");
+        Matcher matcher = pattern.matcher(sql);
+        if (!matcher.find()) {
+            throw new SQLException("Invalid DELETE statement");
+        }
 
-        String[] whereParts = parts[1].trim().split("=");
-        String whereColumn = whereParts[0].trim();
-        String whereValue = whereParts[1].trim();
+        String tableName = matcher.group(1);
+        String whereClause = matcher.group(2);
+        List<String[]> newData = new ArrayList<>();
+        loadCsvData(tableName);
+        newData.add(data.get(0)); // 헤더 유지
 
-        int deleteCount = 0;
-        int whereColumnIndex = Arrays.asList(data.get(0)).indexOf(whereColumn);
+        int deletedRows = 0;
 
-        Iterator<String[]> iterator = data.iterator();
-        iterator.next();
-        while (iterator.hasNext()) {
-            String[] row = iterator.next();
-            if (row[whereColumnIndex].equals(whereValue)) {
-                iterator.remove();
-                deleteCount++;
+        for (int i = 1; i < data.size(); i++) {
+            if (!evaluateWhereClause(data.get(0), data.get(i), whereClause)) {
+                newData.add(data.get(i));
+            } else {
+                deletedRows++;
             }
         }
-        saveCsvData();
-        return deleteCount;
+        this.data = newData;
+        saveCsvData(tableName);
+        return deletedRows;
+    }
+
+    private boolean evaluateWhereClause(String[] headers, String[] row, String whereClause) {
+        // 매우 기본적인 WHERE 절 평가 (예: column = value)
+        String[] parts = whereClause.split("=");
+        if (parts.length != 2) return false;
+
+        String column = parts[0].trim();
+        String value = parts[1].trim().replaceAll("^'|'$", "");
+
+        int columnIndex = getColumnIndex(headers, column);
+        return row[columnIndex].equals(value);
+    }
+
+    private int getColumnIndex(String[] headers, String columnName) {
+        for (int i = 0; i < headers.length; i++) {
+            if (headers[i].equalsIgnoreCase(columnName)) {
+                return i;
+            }
+        }
+        return -1;
     }
 
 
