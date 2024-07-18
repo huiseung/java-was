@@ -118,9 +118,10 @@ public class HttpRequestParser {
                 int contentTypeNewLinePos = indexOf(bodyBytes, newLine, newLinePos + newLine.length); // content-type \r\n 첫 위치
                 String partContentType = new String(Arrays.copyOfRange(bodyBytes, newLinePos + newLine.length, contentTypeNewLinePos));
                 byte[] fileBytes = Arrays.copyOfRange(bodyBytes, contentTypeNewLinePos + newLine.length * 2, delimiterPos - newLine.length);
-                log.debug("[readMultipartFormData] filename: " + filename + ", part-content-type: " + partContentType + ", file size: " + fileBytes.length + "byte");
+                String changeFilename =  UUID.randomUUID().toString() + filename.substring(filename.lastIndexOf("."));
+                log.debug("[readMultipartFormData] filename: " + filename + ", changeFileName: " + changeFilename + ", part-content-type: " + partContentType + ", file size: " + fileBytes.length + "byte");
                 formData.put(name, fileBytes);
-                formData.put("filename", UUID.randomUUID().toString() + filename.substring(filename.lastIndexOf(".")));
+                formData.put("filename", changeFilename);
             } else {
                 // 문자열 처리
                 String name = getFieldName(contentDisposition.split(";")[1]);
