@@ -6,6 +6,8 @@ import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.UUID;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -95,6 +97,7 @@ public class HttpRequestParser {
         int delimiterPos = indexOf(bodyBytes, delimiter, start);
         int endDelimiterPos = indexOf(bodyBytes, endDelimiter, start);
         while(delimiterPos != endDelimiterPos){
+            log.debug("[readMultipartFormData] delemiterPost/endDelimiterPos {}:{}", delimiterPos, endDelimiterPos);
             start = delimiterPos + delimiter.length+newLine.length; // "--bodunary\r\n" 다음 위치
             delimiterPos = indexOf(bodyBytes, delimiter, start); // 다음 줄의 "--bodunary\r\n" 첫 위치
             int newLinePos = indexOf(bodyBytes, newLine, start); // content-disposition가 있는 줄에 "\r\n" 첫 위치
@@ -109,7 +112,7 @@ public class HttpRequestParser {
                 byte[] fileBytes =  Arrays.copyOfRange(bodyBytes, contentTypeNewLinePos+newLine.length*2, delimiterPos-newLine.length);
                 log.debug("[readMultipartFormData] filename: "+filename + ", part-content-type: "+partContentType + ", file size: "+fileBytes.length+"byte");
                 formData.put(name, fileBytes);
-                formData.put("filename", filename);
+                formData.put("filename", UUID.randomUUID().toString()+filename.substring(filename.lastIndexOf(".")));
             } else{
                 // 문자열 처리
                 String name = getFieldName(contentDisposition.split(";")[1]);
